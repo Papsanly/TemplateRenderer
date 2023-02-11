@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg fill="#ffffff" height="24" width="24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 24 24" xml:space="preserve">
+    <g transform="translate(-104 -382)" fill="#ffffff">
+        <path d="M12.24,0H3.76C1,0,0,1,0,3.81V16.19C0,19,1,20,3.76,20h8.47C15,20,16,19,16,16.19V3.81C16,1,15,0,12.24,0ZM8,17.3a1.75,1.75,0,1,1,1.75-1.75A1.758,1.758,0,0,1,8,17.3ZM10,4.25H6a.75.75,0,0,1,0-1.5h4a.75.75,0,0,1,0,1.5Z"
+              transform="translate(108 384)"/>
+    </g>
+</svg>
