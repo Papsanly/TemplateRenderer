@@ -1,4 +1,7 @@
+import json
 from dataclasses import dataclass
+from django.template import Context, Engine
+from args import get_parser
 
 
 @dataclass
@@ -11,7 +14,7 @@ class Template:
     def context(self):
         if self.context_values is None:
             raise ValueError("'context_values' not specified")
-        return dict(zip(self.context_keys, self.context_values))
+        return Context(dict(zip(self.context_keys, self.context_values)))
 
     @property
     def context_values(self) -> list[str] | None:
@@ -24,13 +27,20 @@ class Template:
         self._context_values = value
 
     @property
-    def path_name(self):
-        return f'templates/{self.name}.html'
+    def filename(self):
+        return f'{self.name}.html'
 
 
-def get_template(name: str) -> Template:
+def load_templates_config():
+    with open('templates/config.json', 'r') as f:
+        json_dict = json.load(f)
 
-    result = [template for template in templates if template.name == name]
+    return [Template(**template_config) for template_config in json_dict['templates']]
+
+
+def find_template(name: str) -> Template:
+
+    result = [template for template in load_templates_config() if template.name == name]
     if not result:
         raise ValueError('Template does not exist')
     elif len(result) != 1:
@@ -39,13 +49,17 @@ def get_template(name: str) -> Template:
     return result[0]
 
 
-templates = [
-    Template(
-        name='fixed_date',
-        context_keys=['code', 'date', 'time']
-    ),
-    Template(
-        name='variable_date',
-        context_keys=['code']
-    )
-]
+def get_template() -> Template:
+    args = get_parser().parse_args()
+
+    template = find_template(args.template)
+    template.context_values = args.context_values
+
+    return template
+
+
+def render_template(template: Template) -> str:
+    template_engine = Engine(dirs=['templates'])
+    django_template = template_engine.get_template(template.filename)
+    html = django_template.render(template.context)
+    return html

@@ -1,0 +1,18 @@
+{
+  "templates": [
+    {
+      "name": "fixed_date",
+      "context_keys": [
+        "code",
+        "date",
+        "time"
+      ]
+    },
+    {
+      "name": "variable_date",
+      "context_keys": [
+        "code"
+      ]
+    }
+  ]
+}
