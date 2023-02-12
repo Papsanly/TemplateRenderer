@@ -1,7 +1,6 @@
 import json
 from dataclasses import dataclass
 from django.template import Context, Engine
-from args import get_parser
 
 
 @dataclass
@@ -32,7 +31,7 @@ class Template:
 
 
 def load_templates_config():
-    with open('templates/config.json', 'r') as f:
+    with open('config.json', 'r') as f:
         json_dict = json.load(f)
 
     return [Template(**template_config) for template_config in json_dict['templates']]
@@ -44,7 +43,7 @@ def find_template(name: str) -> Template:
     if not result:
         raise ValueError('Template does not exist')
     elif len(result) != 1:
-        raise ValueError('Templates name should be unique')
+        raise ValueError('Template names should be unique')
 
     return result[0]
 
