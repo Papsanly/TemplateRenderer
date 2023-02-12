@@ -9,7 +9,7 @@ Render certificates for Aviasim
 
 # Usage
 
-Run following commands inside project directory:
+Run following command inside project directory:
 
 ```shell
 python main.py [--chrome-path CHROME_PATH] template [context_values ...]
