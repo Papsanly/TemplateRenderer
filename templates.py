@@ -49,12 +49,9 @@ def find_template(name: str) -> Template:
     return result[0]
 
 
-def get_template() -> Template:
-    args = get_parser().parse_args()
-
+def get_template(args) -> Template:
     template = find_template(args.template)
     template.context_values = args.context_values
-
     return template
 
 
