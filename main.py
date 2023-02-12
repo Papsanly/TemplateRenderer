@@ -12,7 +12,7 @@ def main():
         template = get_template(args)
         html = render_template(template)
         convert_to_pdf(html)
-    except (ValueError, CalledProcessError) as e:
+    except (ValueError, CalledProcessError, FileNotFoundError) as e:
         print(f'An error occured: {e}')
     else:
         print('Render Successful')

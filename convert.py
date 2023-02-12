@@ -8,6 +8,9 @@ def convert_to_pdf(html: str):
     with open('config.json', 'r') as f:
         chrome_path = json.load(f)['chrome_path']
 
+    if not chrome_path:
+        raise ValueError('Chrome path not configured')
+
     with open('templates/temp.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
