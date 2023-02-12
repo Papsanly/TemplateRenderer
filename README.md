@@ -15,7 +15,7 @@ Run following commands inside project directory:
 python main.py [--chrome-path CHROME_PATH] template [context_values ...]
 ```
 
-`--chrome-path` - optional argument to set path to your chrome executable, if it doesn't match path specified in 
+`--chrome-path` - Optional argument to set path to your chrome executable, if it doesn't match path specified in 
 `config.json`.
 
 `template` - Template to use. All templates available are listed in `config.json`
