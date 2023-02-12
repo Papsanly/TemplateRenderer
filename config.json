@@ -1,19 +1,19 @@
 {
-  "templates": [
-    {
-      "name": "fixed_date",
-      "context_keys": [
-        "code",
-        "date",
-        "time"
-      ]
-    },
-    {
-      "name": "variable_date",
-      "context_keys": [
-        "code"
-      ]
-    }
-  ],
-  "chrome_path": "asfdasdf"
+    "templates": [
+        {
+            "name": "fixed_date",
+            "context_keys": [
+                "code",
+                "date",
+                "time"
+            ]
+        },
+        {
+            "name": "variable_date",
+            "context_keys": [
+                "code"
+            ]
+        }
+    ],
+    "chrome_path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 }
