@@ -4,7 +4,7 @@ from django.template import Context, Engine
 
 
 @dataclass
-class Template:
+class TemplateConfig:
     name: str
     context_keys: list[str]
     _context_values: list[str] = None
@@ -34,10 +34,10 @@ def load_templates_config():
     with open('config.json', 'r') as f:
         json_dict = json.load(f)
 
-    return [Template(**template_config) for template_config in json_dict['templates']]
+    return [TemplateConfig(**template_config) for template_config in json_dict['templates']]
 
 
-def find_template(name: str) -> Template:
+def find_template(name: str) -> TemplateConfig:
 
     result = [template for template in load_templates_config() if template.name == name]
     if not result:
@@ -48,13 +48,13 @@ def find_template(name: str) -> Template:
     return result[0]
 
 
-def get_template(args) -> Template:
+def get_template(args) -> TemplateConfig:
     template = find_template(args.template)
     template.context_values = args.context_values
     return template
 
 
-def render_template(template: Template) -> str:
+def render_template(template: TemplateConfig) -> str:
     template_engine = Engine(dirs=['templates'])
     django_template = template_engine.get_template(template.filename)
     html = django_template.render(template.context)
