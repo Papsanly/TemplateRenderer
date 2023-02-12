@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 Run main.py
 ```shell
-python main.py [--chrome-path CHROME_PATH] template [context_values ...]
+python main.py template [context_values ...] [--chrome-path CHROME_PATH]
 ```
 
 `--chrome-path` - Optional argument to set path to your chrome executable, if it doesn't match path specified in 
