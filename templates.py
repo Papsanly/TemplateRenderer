@@ -1,6 +1,7 @@
-import json
 from dataclasses import dataclass
 from django.template import Context, Engine
+
+from config import TEMPLATES
 
 
 @dataclass
@@ -31,10 +32,7 @@ class TemplateConfig:
 
 
 def load_templates_config():
-    with open('config.json', 'r') as f:
-        json_dict = json.load(f)
-
-    return [TemplateConfig(**template_config) for template_config in json_dict['templates']]
+    return [TemplateConfig(**template_config) for template_config in TEMPLATES]
 
 
 def find_template(name: str) -> TemplateConfig:

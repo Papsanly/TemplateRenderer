@@ -1,20 +1,16 @@
-import json
 import os
 import subprocess
 import sys
 
+from config import CHROME_PATH, OUTPUT_PATH, PROJECT_PATH
 
-def convert_to_pdf(html: str):
-    with open('config.json', 'r') as f:
-        chrome_path = json.load(f)['chrome_path']
 
-    if not chrome_path:
-        raise ValueError('Chrome path not configured')
+def convert_to_pdf(html: str, filename: str):
 
     with open('templates/temp.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
-    shell_command = get_shell_command(chrome_path)
+    shell_command = get_shell_command(CHROME_PATH, filename)
 
     subprocess.run(
         shell_command,
@@ -25,25 +21,15 @@ def convert_to_pdf(html: str):
     os.remove('templates/temp.html')
 
 
-def get_shell_command(chrome_path):
-
-    abspath = os.path.dirname(os.path.abspath(__file__))
+def get_shell_command(chrome_path: str, filename: str):
 
     args = [
         chrome_path,
         '--headless',
         '--disable-gpu',
         '--no-margins',
-        f'--print-to-pdf={abspath}/out.pdf',
-        f'{abspath}/templates/temp.html'
+        f'--print-to-pdf={OUTPUT_PATH}/{filename}.pdf',
+        f'{PROJECT_PATH}/templates/temp.html'
     ]
 
     return ' '.join(args)
-
-
-def set_chrome_path(path: str):
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-    config['chrome_path'] = path
-    with open('config.json', 'w') as f:
-        json.dump(config, f, indent=4)
