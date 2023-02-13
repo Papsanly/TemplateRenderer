@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from config import CHROME_PATH, OUTPUT_PATH, PROJECT_PATH
+from config import CHROME_PATH, OUTPUT_PATH, PROJECT_PATH, TIME_BUDGET
 
 
 def convert_to_pdf(html: str, filename: str):
@@ -31,6 +31,7 @@ def get_shell_command(filename: str):
         '--headless',
         '--disable-gpu',
         '--no-margins',
+        f'--virtual-time-budget={TIME_BUDGET}',
         '--run-all-compositor-stages-before-draw',
         f'--print-to-pdf={os.path.join(OUTPUT_PATH, filename)}.pdf',
         f'{PROJECT_PATH}/templates/temp.html'

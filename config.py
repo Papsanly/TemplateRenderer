@@ -23,3 +23,5 @@ TEMPLATES = [
         ]
     }
 ]
+
+TIME_BUDGET = 1000
