@@ -10,7 +10,7 @@ def convert_to_pdf(html: str, filename: str):
     with open('templates/temp.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
-    shell_command = get_shell_command(CHROME_PATH, filename)
+    shell_command = get_shell_command(filename)
 
     subprocess.run(
         shell_command,
@@ -21,15 +21,18 @@ def convert_to_pdf(html: str, filename: str):
     os.remove('templates/temp.html')
 
 
-def get_shell_command(chrome_path: str, filename: str):
+def get_shell_command(filename: str):
+
+    if not os.path.exists(OUTPUT_PATH):
+        raise FileNotFoundError('OUTPUT_PATH does not exist')
 
     args = [
-        chrome_path,
+        CHROME_PATH,
         '--headless',
         '--disable-gpu',
         '--no-margins',
-        '--run-all-compositor-stages-before-draw'
-        f'--print-to-pdf={OUTPUT_PATH}/{filename}.pdf',
+        '--run-all-compositor-stages-before-draw',
+        f'--print-to-pdf={os.path.join(OUTPUT_PATH, filename)}.pdf',
         f'{PROJECT_PATH}/templates/temp.html'
     ]
 
