@@ -28,6 +28,7 @@ def get_shell_command(chrome_path: str, filename: str):
         '--headless',
         '--disable-gpu',
         '--no-margins',
+        '--run-all-compositor-stages-before-draw'
         f'--print-to-pdf={OUTPUT_PATH}/{filename}.pdf',
         f'{PROJECT_PATH}/templates/temp.html'
     ]
