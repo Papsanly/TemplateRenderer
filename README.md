@@ -4,8 +4,8 @@ Render certificates for [Aviasim](https://aviasim.com.ua)
 
 # Prerequisites
 
-- Python version >3.10
-- Chrome version >60
+- Python version 3.10 or higher
+- Chrome version 60 or higher
 
 # Usage
 
