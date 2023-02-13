@@ -25,8 +25,5 @@ Run main.py
 python main.py [-h] template [context_values ...]
 ```
 
-`template` - Template to use. All templates available are listed in `config.py`
-
-`context_values` - Values to fill the template with. Listed for each template in `config.py`
-
-Output and chrome executable path also can be set in `config.py`.
+All available templates are listed in `config.py`, as well as their context keys, which are the values to fill the 
+template with. Output and chrome executable path also can be set in there.
