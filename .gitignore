@@ -1,4 +1,5 @@
 .idea/*
 venv/*
 *.pdf
-templates/temp.html
+*/temp.html
+.env

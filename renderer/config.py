@@ -1,15 +1,15 @@
 import os
 
-PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+RENDERER_PATH = os.path.dirname(os.path.abspath(__file__))
 
 CHROME_PATH = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
-OUTPUT_PATH = PROJECT_PATH
+OUTPUT_PATH = r'C:\Users\Iurii\Desktop\сертификат'
 
 TEMPLATES = [
     {
         "name": "fixed_date",
         "context_keys": [
-            "duration",
+            ("duration", ["30", "60", "120"]),
             "code",
             "date",
             "time"
@@ -18,10 +18,10 @@ TEMPLATES = [
     {
         "name": "variable_date",
         "context_keys": [
-            "duration",
+            ("duration", ["30", "60", "120"]),
             "code"
         ]
     }
 ]
 
-TIME_BUDGET = 1000
+TIME_BUDGET = 15000

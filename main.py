@@ -1,15 +1,15 @@
 from subprocess import CalledProcessError
 
 from args import parse
-from templates import get_template, render_template
-from convert import convert_to_pdf
+from renderer.templates import get_template, render_template
+from renderer.convert import convert_to_pdf
 
 
 def main():
 
     try:
         args = parse()
-        template = get_template(args)
+        template = get_template(**args)
         html = render_template(template)
         convert_to_pdf(html, args.context_values[1])
     except (ValueError, CalledProcessError, FileNotFoundError) as e:
