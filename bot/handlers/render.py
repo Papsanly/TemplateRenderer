@@ -101,7 +101,7 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
                 await message.answer(
                     str(e),
                     reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
-                        InlineKeyboardButton('Try again', callback_data='render')
+                        InlineKeyboardButton('Try Again', callback_data='render')
                     ]])
                 )
             else:
