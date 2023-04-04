@@ -3,7 +3,7 @@ import os
 RENDERER_PATH = os.path.dirname(os.path.abspath(__file__))
 
 CHROME_PATH = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
-OUTPUT_PATH = r'C:\Users\Iurii\Desktop\сертификат'
+OUTPUT_PATH = RENDERER_PATH
 
 TEMPLATES = [
     {
