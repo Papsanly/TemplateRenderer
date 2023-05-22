@@ -1,34 +1,32 @@
-from jinja2 import Environment, meta, TemplateNotFound, FileSystemLoader
+from jinja2 import Environment, meta, FileSystemLoader
 
 from .config import TEMPLATE_PATH
 
 
-def get_context_keys(parsed_content):
+def get_env() -> Environment:
+    return Environment(loader=FileSystemLoader(TEMPLATE_PATH))
+
+
+def get_context_keys(env: Environment, template_name: str) -> list[str]:
+    source = env.loader.get_source(env, template_name)[0]
+    body = env.parse(source).body[0]
     template_variables = []
-    for variable in parsed_content.body[0].nodes:
-        if isinstance(variable, meta.nodes.Name):
-            template_variables.append(variable.name)
+    if hasattr(body, 'nodes'):
+        for variable in body.nodes:
+            if isinstance(variable, meta.nodes.Name):
+                template_variables.append(variable.name)
     return template_variables
 
 
-def validate_context(context_keys, context: dict[str, str]):
-    notset_keys = set(context_keys) - set(context.keys())
+def validate_context(context_keys: list[str], context: dict[str, str]):
+    notset_keys = set(context_keys) - context.keys()
     if notset_keys:
         raise ValueError(f"Not set context keys: {notset_keys}")
 
 
 def render_template(template_name: str, context: dict[str, str]) -> str:
-    env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
-
-    try:
-        template = env.get_template(template_name)
-    except TemplateNotFound as e:
-        raise TemplateNotFound(f'Template {e} not found')
-
-    source = env.loader.get_source(env, template_name)[0]
-    parsed_content = env.parse(source)
-    context_keys = get_context_keys(parsed_content)
-
+    env = get_env()
+    template = env.get_template(template_name)
+    context_keys = get_context_keys(env, template_name)
     validate_context(context_keys, context)
-
     return template.render(context)

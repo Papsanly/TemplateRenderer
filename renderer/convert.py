@@ -24,7 +24,7 @@ def convert_to_pdf(html: str, filename: str):
     os.remove(TEMP_FILE_NAME)
 
 
-def get_shell_command(filename: str):
+def get_shell_command(filename: str) -> str:
 
     if not os.path.exists(OUTPUT_PATH):
         os.makedirs(OUTPUT_PATH)
@@ -43,7 +43,7 @@ def get_shell_command(filename: str):
     return ' '.join(args)
 
 
-async def convert_to_pdf_async(html: str, filename: str):
+async def convert_to_pdf_async(html: str, filename: str) -> str:
 
     with open(TEMP_FILE_NAME, 'w', encoding='utf-8') as f:
         f.write(html)

@@ -29,12 +29,17 @@ pip install -r requirements.txt
 
 Run main.py
 ```shell
-python main.py [-h] [-o] template [--context_values ...]
+python main.py [-h] [-o] template [context key-value pairs ...]
 ```
 
 Example
 ```shell
-python main.py -o result.pdf template_name --foo foo1 --bar bar2
+python main.py -o result.pdf template_name.html --ctx_key1 ctx_val1 --ctx_key2 ctx_val2
+```
+
+You can also see context keys required for a template with `--ctx` argument
+```shell
+python main.py template_name.html --ctx
 ```
 
 # [Telegram Bot](https://core.telegram.org/bots/api)

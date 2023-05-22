@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 
 
 def get_parser() -> ArgumentParser:
@@ -8,10 +8,12 @@ def get_parser() -> ArgumentParser:
     )
     parser.add_argument('template')
     parser.add_argument('-o', default='out.pdf', dest='output_file_name')
+    parser.add_argument('--ctx', required=False, dest='get_context', action='store_true')
+
     return parser
 
 
-def parse():
+def parse() -> Namespace:
     parser = get_parser()
     args, remaining_args = parser.parse_known_args()
     args.context_values = {
