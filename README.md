@@ -48,3 +48,8 @@ The `bot` directory contains a simple telegram bot.
 
 The `/render` command will provide a user with a form to fill in the context values for the templates and will send the
 rendered pdf file.
+
+# TODO
+
+- Actually rewrite the bot
+- added more helpful message when violating allowed options for a context key
