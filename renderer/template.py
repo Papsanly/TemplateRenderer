@@ -1,4 +1,6 @@
-from jinja2 import Environment, PackageLoader, meta, TemplateNotFound
+from jinja2 import Environment, meta, TemplateNotFound, FileSystemLoader
+
+from .config import TEMPLATE_PATH
 
 
 def get_context_keys(parsed_content):
@@ -10,7 +12,7 @@ def get_context_keys(parsed_content):
 
 
 def render_template(template_name: str, context_values: list[str]) -> str:
-    env = Environment(loader=PackageLoader('renderer'))
+    env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
 
     try:
         template = env.get_template(template_name)
