@@ -30,7 +30,9 @@ def limit_to(value: str, *allowed) -> str:
     if value in allowed:
         return value
     else:
-        raise TemplateRuntimeError('undefined error')
+        raise TemplateRuntimeError(
+            f"Variable to which you passed value '{value}' can only be one of these: {allowed}"
+        )
 
 
 def render_template(template_name: str, context: dict[str, str]) -> str:
