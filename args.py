@@ -16,9 +16,16 @@ def get_parser() -> ArgumentParser:
 def parse() -> Namespace:
     parser = get_parser()
     args, remaining_args = parser.parse_known_args()
-    args.context_values = {
-        remaining_args[i][2:]: remaining_args[i + 1]
-        for i in range(0, len(remaining_args), 2)
-    }
+
+    if len(remaining_args) % 2:
+        raise ValueError('Invalid arguments')
+
+    args.context_values = {}
+    for i in range(0, len(remaining_args), 2):
+        arg_key = remaining_args[i]
+        arg_value = remaining_args[i + 1]
+        if arg_key[:2] != '--':
+            raise ValueError('Invalid arguments')
+        args.context_values[arg_key[2:]] = arg_value
 
     return args
