@@ -11,7 +11,13 @@ def get_context_keys(parsed_content):
     return template_variables
 
 
-def render_template(template_name: str, context_values: list[str]) -> str:
+def validate_context(context_keys, context: dict[str, str]):
+    notset_keys = set(context_keys) - set(context.keys())
+    if notset_keys:
+        raise ValueError(f"Not set context keys: {notset_keys}")
+
+
+def render_template(template_name: str, context: dict[str, str]) -> str:
     env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
 
     try:
@@ -23,7 +29,6 @@ def render_template(template_name: str, context_values: list[str]) -> str:
     parsed_content = env.parse(source)
     context_keys = get_context_keys(parsed_content)
 
-    if len(context_keys) != len(context_values):
-        raise ValueError(f"'context_values' should contain {len(context_keys)} value(s)")
+    validate_context(context_keys, context)
 
-    return template.render(zip(context_keys, context_values))
+    return template.render(context)

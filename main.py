@@ -8,10 +8,10 @@ from renderer.convert import convert_to_pdf
 def main():
     try:
         args = parse()
-        html = render_template(f'{args.template}.html', args.context_values)
+        html = render_template(args.template, args.context_values)
         convert_to_pdf(html, args.output_file_name)
     except (ValueError, CalledProcessError, TemplateNotFound) as e:
-        print(f'An error occured: {e}')
+        print(f'Error: {e}')
     else:
         print('Render Successful')
 

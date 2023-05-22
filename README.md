@@ -29,12 +29,17 @@ pip install -r requirements.txt
 
 Run main.py
 ```shell
-python main.py [-h] [-o] template [context_values ...]
+python main.py [-h] [-o] template [--context_values ...]
+```
+
+Example
+```shell
+python main.py -o result.pdf template_name --foo foo1 --bar bar2
 ```
 
 # [Telegram Bot](https://core.telegram.org/bots/api)
 
-The bot is a simple wrapper around the cli app. 
+The `bot` directory contains a simple telegram bot. 
 
 The `/render` command will provide a user with a form to fill in the context values for the templates and will send the
 rendered pdf file.
