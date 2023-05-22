@@ -3,3 +3,5 @@ venv/*
 *.pdf
 */temp.html
 .env
+*/templates
+*/output

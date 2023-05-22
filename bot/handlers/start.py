@@ -9,7 +9,7 @@ async def start(message: Message):
     text = [
         f'Hello, <strong>{message.from_user.first_name}</strong>',
         '',
-        'To start rendering Aviasim certificates press the <strong>Render</strong> button bellow'
+        'To start rendering press the <strong>Render</strong> button bellow'
     ]
 
     keyboard = InlineKeyboardMarkup(

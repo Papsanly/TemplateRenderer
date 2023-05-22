@@ -3,12 +3,14 @@ import os
 import subprocess
 import sys
 
-from .config import CHROME_PATH, OUTPUT_PATH, RENDERER_PATH, TIME_BUDGET
+from .config import CHROME_PATH, OUTPUT_PATH, TEMPLATE_PATH
+
+TEMP_FILE_NAME = os.path.join(TEMPLATE_PATH, 'temp.html')
 
 
 def convert_to_pdf(html: str, filename: str):
 
-    with open(f'{RENDERER_PATH}/templates/temp.html', 'w', encoding='utf-8') as f:
+    with open(TEMP_FILE_NAME, 'w', encoding='utf-8') as f:
         f.write(html)
 
     shell_command = get_shell_command(filename)
@@ -19,23 +21,23 @@ def convert_to_pdf(html: str, filename: str):
         check=True
     )
 
-    os.remove(f'{RENDERER_PATH}/templates/temp.html')
+    os.remove(TEMP_FILE_NAME)
 
 
 def get_shell_command(filename: str):
 
     if not os.path.exists(OUTPUT_PATH):
-        raise FileNotFoundError('OUTPUT_PATH does not exist')
+        os.makedirs(OUTPUT_PATH)
 
     args = [
         f'"{CHROME_PATH}"',
         '--headless',
         '--disable-gpu',
         '--no-margins',
-        f'--virtual-time-budget={TIME_BUDGET}',
+        f'--virtual-time-budget=1000',
         '--run-all-compositor-stages-before-draw',
-        f'--print-to-pdf={OUTPUT_PATH}/{filename}.pdf',
-        f'{RENDERER_PATH}/templates/temp.html'
+        f'--print-to-pdf={os.path.join(OUTPUT_PATH, filename)}',
+        f'{TEMP_FILE_NAME}'
     ]
 
     return ' '.join(args)
@@ -43,7 +45,7 @@ def get_shell_command(filename: str):
 
 async def convert_to_pdf_async(html: str, filename: str):
 
-    with open(f'{RENDERER_PATH}/templates/temp.html', 'w', encoding='utf-8') as f:
+    with open(TEMP_FILE_NAME, 'w', encoding='utf-8') as f:
         f.write(html)
 
     shell_command = get_shell_command(filename)
@@ -59,6 +61,6 @@ async def convert_to_pdf_async(html: str, filename: str):
     if process.returncode != 0:
         raise subprocess.CalledProcessError(process.returncode, shell_command, stderr=stderr)
 
-    os.remove(f'{RENDERER_PATH}/templates/temp.html')
+    os.remove(TEMP_FILE_NAME)
 
     return stdout.decode().strip()

@@ -1,18 +1,25 @@
-# Certificate Renderer
+# Template Renderer
 
-Render certificates for [Aviasim](https://aviasim.com.ua)
+Render jinja2 templates to PDF
 
 # Prerequisites
 
-- Python version 3.10 or higher
-- Chrome version 60 or higher
+- Python 3.10 or higher
+- Chrome 60 or higher
 
 # Usage
+
+Configure your chrome executable path in `config.py`
+```python
+CHROME_PATH = 'your/path/to/chrome'
+```
+
+Output and templates path can also be configured in `config.py`.
 
 Create and activate python virtual environment
 ```shell
 python -m venv venv
-venv\Scripts\activate
+source venv/bin/activate
 ```
 
 Install dependencies
@@ -22,10 +29,12 @@ pip install -r requirements.txt
 
 Run main.py
 ```shell
-python main.py [-h] template [context_values ...]
+python main.py [-h] [-o] template [context_values ...]
 ```
 
-All available templates, as well as their context keys, which are the values to fill the template with, are listed in
-`renderer/config.py`. Output and chrome executable path also can be configured there. TIME_BUDGET setting controls the delay in
-milliseconds of PDF creation process. The bigger the value - the less likely the result will contain not loaded images, 
-fonts etc.
+# [Telegram Bot](https://core.telegram.org/bots/api)
+
+The bot is a simple wrapper around the cli app. 
+
+The `/render` command will provide a user with a form to fill in the context values for the templates and will send the
+rendered pdf file.

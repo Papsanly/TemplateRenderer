@@ -6,8 +6,8 @@ from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardBut
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
 from bot.loader import dp
-from renderer.config import TEMPLATES, OUTPUT_PATH
-from renderer.templates import find_template, get_template, render_template
+from renderer.config import OUTPUT_PATH
+from renderer.templates import render_template
 from renderer.convert import convert_to_pdf_async
 
 
