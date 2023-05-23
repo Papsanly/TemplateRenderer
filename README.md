@@ -52,4 +52,5 @@ rendered pdf file.
 # TODO
 
 - Actually rewrite the bot
-- added more helpful message when violating allowed options for a context key
+- Add docker
+- Added more helpful message when violating allowed options for a context key
