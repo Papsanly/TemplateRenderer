@@ -1,3 +1,4 @@
+import os
 from os import path
 from subprocess import CalledProcessError
 
@@ -123,11 +124,13 @@ async def render_filename(message: Message, state: FSMContext):
                 ]])
             )
         else:
+            filepath = path.join(OUTPUT_PATH, filename)
             await message.answer_document(
-                InputFile(path_or_bytesio=path.join(OUTPUT_PATH, filename)),
+                InputFile(path_or_bytesio=filepath),
                 reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
                     InlineKeyboardButton('Render More', callback_data='render')
                 ]])
             )
+            os.remove(filepath)
         finally:
             await state.reset_state()
