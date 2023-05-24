@@ -1,5 +1,4 @@
 import os
-from os import path
 from subprocess import CalledProcessError
 
 from aiogram.dispatcher import FSMContext
@@ -42,7 +41,7 @@ async def render(callback_query: CallbackQuery):
     keyboard = InlineKeyboardMarkup()
 
     for template_path in TEMPLATES:
-        template_name = path.basename(template_path)
+        template_name = os.path.basename(template_path)
         keyboard.add(InlineKeyboardButton(template_name, callback_data=f'template:{template_name}'))
 
     await callback_query.message.answer(
@@ -85,7 +84,7 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
         context_value = callback_query_or_message.text
         message = callback_query_or_message
     else:
-        return
+        raise TypeError
 
     async with state.proxy() as data:
         context_index = data['context_index']
@@ -94,7 +93,6 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
         try:
             next_context_key = data['context_keys'][context_index + 1]
             data['context_index'] = context_index + 1
-
             text, keyboard = get_answer_content(next_context_key)
             await message.answer(
                 text,
@@ -124,7 +122,7 @@ async def render_filename(message: Message, state: FSMContext):
                 ]])
             )
         else:
-            filepath = path.join(OUTPUT_PATH, filename)
+            filepath = os.path.join(OUTPUT_PATH, filename)
             await message.answer_document(
                 InputFile(path_or_bytesio=filepath),
                 reply_markup=InlineKeyboardMarkup(inline_keyboard=[[

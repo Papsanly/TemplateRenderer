@@ -29,6 +29,12 @@ def get_shell_command(filename: str) -> str:
     if not os.path.exists(OUTPUT_PATH):
         os.makedirs(OUTPUT_PATH)
 
+    if not CHROME_PATH:
+        raise ValueError('CHROME_PATH not set')
+
+    if not os.path.exists(CHROME_PATH):
+        raise ValueError('CHROME_PATH does not exist')
+
     args = [
         f'"{CHROME_PATH}"',
         '--headless',
@@ -36,8 +42,8 @@ def get_shell_command(filename: str) -> str:
         '--no-margins',
         f'--virtual-time-budget=1000',
         '--run-all-compositor-stages-before-draw',
-        f'--print-to-pdf={os.path.join(OUTPUT_PATH, filename)}',
-        f'{TEMP_FILE_NAME}'
+        f'--print-to-pdf="{os.path.join(OUTPUT_PATH, filename)}"',
+        f'"{TEMP_FILE_NAME}"'
     ]
 
     return ' '.join(args)
