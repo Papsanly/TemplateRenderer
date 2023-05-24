@@ -8,7 +8,7 @@ from .config import TEMPLATE_PATH
 @dataclass
 class TemplateVarFilter:
     name: str
-    args: list
+    args: list[str]
 
 
 @dataclass
@@ -32,7 +32,7 @@ def get_context_keys(template_name: str) -> list[TemplateVar]:
             elif isinstance(variable, meta.nodes.Filter) and isinstance(variable.node, meta.nodes.Name):
                 template_variables.append(TemplateVar(
                     name=variable.node.name,
-                    filter=TemplateVarFilter(variable.name, variable.args)
+                    filter=TemplateVarFilter(variable.name, list(map(lambda x: str(x.value), variable.args)))
                 ))
     return template_variables
 
