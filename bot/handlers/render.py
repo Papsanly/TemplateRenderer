@@ -7,7 +7,9 @@ from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardBut
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from jinja2 import TemplateRuntimeError
 
+import filters
 from bot.loader import dp
+from filters import limit_to
 from renderer.config import OUTPUT_PATH
 from renderer.template import render_template, TEMPLATES, get_context_keys, TemplateVar
 from renderer.convert import convert_to_pdf_async
@@ -20,7 +22,7 @@ class Render(StatesGroup):
 
 
 def get_answer_content(context_key: TemplateVar):
-    if context_key.filter and context_key.filter.name == 'limit_to':
+    if context_key.filter and context_key.filter.name == limit_to:
         text = f'Choose {context_key.name}'
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[[
@@ -88,8 +90,17 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
 
     async with state.proxy() as data:
         context_index = data['context_index']
-        context_key = data['context_keys'][context_index].name
-        data['context_values'][context_key] = context_value
+        context_key = data['context_keys'][context_index]
+        data['context_values'][context_key.name] = context_value
+
+        if not context_key.is_valid(context_value):
+            if context_key.filter.name == filters.limit_to:
+                await message.answer(
+                    f"{context_key.name.capitalize()} cannot be {context_value}.\nTry again",
+                    reply_markup=get_answer_content(context_key)[1]
+                )
+            return
+
         try:
             next_context_key = data['context_keys'][context_index + 1]
             data['context_index'] = context_index + 1

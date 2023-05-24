@@ -46,10 +46,9 @@ python main.py template_name.html --ctx
 
 The `bot` directory contains a simple telegram bot. 
 
-The `/render` command will provide a user with a form to fill in the context values for the templates and will send the
-rendered pdf file.
+Provides user with a form to fill in the context values for the templates and sends the rendered
+pdf file.
 
 # TODO
 
 - Add docker
-- Added more helpful message when violating allowed options for a context key

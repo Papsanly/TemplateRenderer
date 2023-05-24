@@ -1,20 +1,37 @@
 import glob
 from dataclasses import dataclass
+from typing import Callable
 
 from jinja2 import Environment, meta, FileSystemLoader, TemplateRuntimeError
+
 from .config import TEMPLATE_PATH
+import filters
 
 
 @dataclass
 class TemplateVarFilter:
-    name: str
+    name: Callable
     args: list[str]
+
+    def __init__(self, name: str, args: list[str]):
+        self.args = args
+        self.name = getattr(filters, name)
 
 
 @dataclass
 class TemplateVar:
     name: str
     filter: TemplateVarFilter | None
+
+    def is_valid(self, value) -> bool:
+        if not self.filter:
+            return True
+        try:
+            self.filter.name(value, *self.filter.args)
+        except TemplateRuntimeError:
+            return False
+        else:
+            return True
 
 
 TEMPLATES = glob.glob(TEMPLATE_PATH + '/*.html')
@@ -42,18 +59,18 @@ def validate_context(context_keys: list[TemplateVar], context: dict[str, str]):
     if notset_keys:
         raise ValueError(f"Not set context keys: {notset_keys}")
 
+    for key, value in zip(context_keys, context.values()):
+        if not key.is_valid(value):
+            if key.filter.name == filters.limit_to:
+                raise ValueError(f"Variable '{key.name}' can only be one of these: {key.filter.args}")
 
-def limit_to(value: str, *allowed) -> str:
-    if value in allowed:
-        return value
-    else:
-        raise TemplateRuntimeError(
-            f"Variable to which you passed value '{value}' can only be one of these: {allowed}"
-        )
+
+def register_filters():
+    env.filters['limit_to'] = filters.limit_to
 
 
 def render_template(template_name: str, context: dict[str, str]) -> str:
-    env.filters['limit_to'] = limit_to
+    register_filters()
     template = env.get_template(template_name)
     context_keys = get_context_keys(template_name)
     validate_context(context_keys, context)

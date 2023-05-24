@@ -15,7 +15,7 @@ def main():
             html = render_template(args.template, args.context_values)
             convert_to_pdf(html, args.output_file_name)
             print('Render Successful')
-    except (ValueError, CalledProcessError, TemplateRuntimeError) as e:
+    except (ValueError, CalledProcessError) as e:
         print(f'Error: {e}')
     except TemplateNotFound as e:
         print(f"Error: Template '{e}' not found")
