@@ -5,7 +5,6 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message, InputFile
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from jinja2 import TemplateRuntimeError
 
 import filters
 from bot.loader import dp
@@ -35,6 +34,13 @@ def get_answer_content(context_key: TemplateVar):
         keyboard = None
 
     return text, keyboard
+
+
+def is_valid_filename(filename):
+    invalid_chars = r'\/|:*?"<>'
+    if any(char in invalid_chars for char in filename):
+        return False
+    return True
 
 
 @dp.callback_query_handler(Text('render'))
@@ -119,13 +125,19 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
 
 @dp.message_handler(state=Render.filename)
 async def render_filename(message: Message, state: FSMContext):
+    filename = f'{message.text}.pdf'
+    if not is_valid_filename(filename):
+        await message.answer('Invalid file name. Try again')
+        return
+
+    filepath = os.path.join(OUTPUT_PATH, filename)
+
     async with state.proxy() as data:
         try:
             html = render_template(data['template'], data['context_values'])
-            filename = f'{message.text}.pdf'
             await message.answer('Rendering...')
             await convert_to_pdf_async(html, filename)
-        except (ValueError, CalledProcessError, TemplateRuntimeError) as e:
+        except (ValueError, CalledProcessError) as e:
             await message.answer(
                 f'Error: {e}',
                 reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
@@ -133,7 +145,6 @@ async def render_filename(message: Message, state: FSMContext):
                 ]])
             )
         else:
-            filepath = os.path.join(OUTPUT_PATH, filename)
             await message.answer_document(
                 InputFile(path_or_bytesio=filepath),
                 reply_markup=InlineKeyboardMarkup(inline_keyboard=[[

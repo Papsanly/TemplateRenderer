@@ -4,7 +4,7 @@ from typing import Callable
 
 from jinja2 import Environment, meta, FileSystemLoader, TemplateRuntimeError
 
-from .config import TEMPLATE_PATH
+from config import TEMPLATE_PATH
 import filters
 
 
