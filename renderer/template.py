@@ -40,17 +40,17 @@ env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
 
 def get_context_keys(template_name: str) -> list[TemplateVar]:
     source = env.loader.get_source(env, template_name)[0]
-    body = env.parse(source).body[0]
     template_variables = []
-    if hasattr(body, 'nodes'):
-        for variable in body.nodes:
-            if isinstance(variable, meta.nodes.Name):
-                template_variables.append(TemplateVar(name=variable.name, filter=None))
-            elif isinstance(variable, meta.nodes.Filter) and isinstance(variable.node, meta.nodes.Name):
-                template_variables.append(TemplateVar(
-                    name=variable.node.name,
-                    filter=TemplateVarFilter(variable.name, list(map(lambda x: str(x.value), variable.args)))
-                ))
+    for body in env.parse(source).body:
+        if hasattr(body, 'nodes'):
+            for variable in body.nodes:
+                if isinstance(variable, meta.nodes.Name):
+                    template_variables.append(TemplateVar(name=variable.name, filter=None))
+                elif isinstance(variable, meta.nodes.Filter) and isinstance(variable.node, meta.nodes.Name):
+                    template_variables.append(TemplateVar(
+                        name=variable.node.name,
+                        filter=TemplateVarFilter(variable.name, list(map(lambda x: str(x.value), variable.args)))
+                    ))
     return template_variables
 
 
