@@ -48,7 +48,3 @@ The `bot` directory contains a simple telegram bot.
 
 Provides user with a form to fill in the context values for the templates and sends the rendered
 pdf file.
-
-# TODO
-
-- Add docker
