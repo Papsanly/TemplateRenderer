@@ -5,15 +5,16 @@ import sys
 
 from .config import CHROME_PATH, OUTPUT_PATH, TEMPLATE_PATH
 
-TEMP_FILE_NAME = os.path.join(TEMPLATE_PATH, 'temp.html')
 
+def convert_to_pdf(html: str, out_basename: str, tmp_basename: str):
 
-def convert_to_pdf(html: str, filename: str):
+    tmp_filename = os.path.join(TEMPLATE_PATH, tmp_basename)
+    out_filename = os.path.join(OUTPUT_PATH, out_basename)
 
-    with open(TEMP_FILE_NAME, 'w', encoding='utf-8') as f:
+    with open(tmp_filename, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    shell_command = get_shell_command(filename)
+    shell_command = get_shell_command(out_filename, tmp_filename)
 
     subprocess.run(
         shell_command,
@@ -21,10 +22,10 @@ def convert_to_pdf(html: str, filename: str):
         check=True
     )
 
-    os.remove(TEMP_FILE_NAME)
+    os.remove(tmp_basename)
 
 
-def get_shell_command(filename: str) -> str:
+def get_shell_command(out_filename: str, tmp_filename: str) -> str:
 
     if not os.path.exists(OUTPUT_PATH):
         os.makedirs(OUTPUT_PATH)
@@ -43,19 +44,22 @@ def get_shell_command(filename: str) -> str:
         '--no-margins',
         f'--virtual-time-budget=1000',
         '--run-all-compositor-stages-before-draw',
-        f'--print-to-pdf="{os.path.join(OUTPUT_PATH, filename)}"',
-        f'"{TEMP_FILE_NAME}"'
+        f'--print-to-pdf="{out_filename}"',
+        f'"{tmp_filename}"'
     ]
 
     return ' '.join(args)
 
 
-async def convert_to_pdf_async(html: str, filename: str) -> str:
+async def convert_to_pdf_async(html: str, out_basename: str, tmp_basename: str) -> str:
 
-    with open(TEMP_FILE_NAME, 'w', encoding='utf-8') as f:
+    tmp_filename = os.path.join(TEMPLATE_PATH, tmp_basename)
+    out_filename = os.path.join(OUTPUT_PATH, out_basename)
+
+    with open(tmp_filename, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    shell_command = get_shell_command(filename)
+    shell_command = get_shell_command(out_filename, tmp_filename)
 
     process = await asyncio.create_subprocess_shell(
         shell_command,
@@ -68,6 +72,6 @@ async def convert_to_pdf_async(html: str, filename: str) -> str:
     if process.returncode != 0:
         raise subprocess.CalledProcessError(process.returncode, shell_command, stderr=stderr)
 
-    os.remove(TEMP_FILE_NAME)
+    os.remove(tmp_filename)
 
     return stdout.decode().strip()

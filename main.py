@@ -13,7 +13,7 @@ def main():
             pprint(get_context_keys(args.template))
         else:
             html = render_template(args.template, args.context_values)
-            convert_to_pdf(html, args.output_file_name)
+            convert_to_pdf(html, args.output_file_name, 'temp.html')
             print('Render Successful')
     except (ValueError, CalledProcessError) as e:
         print(f'Error: {e}')
