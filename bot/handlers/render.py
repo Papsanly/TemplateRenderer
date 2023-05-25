@@ -125,11 +125,10 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
 @dp.message_handler(state=Render.filename)
 async def render_filename(message: Message, state: FSMContext):
     filename = f'{message.text}.pdf'
+    filepath = os.path.join(OUTPUT_PATH, filename)
     if not is_valid_filename(filename):
         await message.answer('Invalid file name. Try again')
         return
-
-    filepath = os.path.join(OUTPUT_PATH, filename)
 
     async with state.proxy() as data:
         try:
