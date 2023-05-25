@@ -10,9 +10,11 @@ RUN wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-
     dpkg -i /tmp/chrome.deb || apt-get install -f -y && \
     rm /tmp/chrome.deb
 
-COPY . .
+COPY requirements.txt .
 
 RUN pip install --root-user-action=ignore --upgrade pip
 RUN pip install --root-user-action=ignore -r requirements.txt
+
+COPY . .
 
 CMD ["python", "bot.py"]
