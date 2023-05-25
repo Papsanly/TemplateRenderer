@@ -59,8 +59,8 @@ def validate_context(context_keys: list[TemplateVar], context: dict[str, str]):
     if notset_keys:
         raise ValueError(f"Not set context keys: {notset_keys}")
 
-    for key, value in zip(context_keys, context.values()):
-        if not key.is_valid(value):
+    for key in context_keys:
+        if not key.is_valid(context[key.name]):
             if key.filter.name == filters.limit_to:
                 raise ValueError(f"Variable '{key.name}' can only be one of these: {key.filter.args}")
 
