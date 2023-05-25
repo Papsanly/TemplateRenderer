@@ -124,9 +124,11 @@ async def render_context_value(callback_query_or_message: CallbackQuery | Messag
 
 @dp.message_handler(state=Render.filename)
 async def render_filename(message: Message, state: FSMContext):
-    filename = f'{message.text}.pdf'
-    filepath = os.path.join(OUTPUT_PATH, filename)
-    if not is_valid_filename(filename):
+    username = message.from_user.username
+    basename = f'{message.text}.pdf'
+    sys_basename = f'{message.text}-{username}.pdf'
+    sys_filename = os.path.join(OUTPUT_PATH, sys_basename)
+    if not is_valid_filename(basename):
         await message.answer('Invalid file name. Try again')
         return
 
@@ -134,7 +136,7 @@ async def render_filename(message: Message, state: FSMContext):
         try:
             html = render_template(data['template'], data['context_values'])
             await message.answer('Rendering...')
-            await convert_to_pdf_async(html, filename)
+            await convert_to_pdf_async(html, sys_basename, f'temp-{username}.html')
         except (ValueError, CalledProcessError) as e:
             await message.answer(
                 f'Error: {e}',
@@ -144,11 +146,11 @@ async def render_filename(message: Message, state: FSMContext):
             )
         else:
             await message.answer_document(
-                InputFile(path_or_bytesio=filepath),
+                InputFile(path_or_bytesio=sys_filename, filename=basename),
                 reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
                     InlineKeyboardButton('Render More', callback_data='render')
                 ]])
             )
-            os.remove(filepath)
+            os.remove(sys_filename)
         finally:
             await state.reset_state()
