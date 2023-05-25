@@ -38,6 +38,7 @@ def get_shell_command(filename: str) -> str:
     args = [
         f'"{CHROME_PATH}"',
         '--headless',
+        '--no-sandbox',
         '--disable-gpu',
         '--no-margins',
         f'--virtual-time-budget=1000',
