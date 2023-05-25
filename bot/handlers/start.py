@@ -1,6 +1,6 @@
 from aiogram.dispatcher.filters import CommandStart
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from loader import dp
+from bot.loader import dp
 
 
 @dp.message_handler(CommandStart())

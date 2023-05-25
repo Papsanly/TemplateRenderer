@@ -1,6 +1,6 @@
 from pprint import pprint
 from subprocess import CalledProcessError
-from jinja2 import TemplateNotFound, TemplateRuntimeError
+from jinja2 import TemplateNotFound
 from args import parse
 from renderer.template import render_template, get_context_keys
 from renderer.convert import convert_to_pdf

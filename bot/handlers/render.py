@@ -6,9 +6,8 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message, InputFile
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
-import filters
+from renderer import filters
 from bot.loader import dp
-from filters import limit_to
 from renderer.config import OUTPUT_PATH
 from renderer.template import render_template, TEMPLATES, get_context_keys, TemplateVar
 from renderer.convert import convert_to_pdf_async
@@ -21,7 +20,7 @@ class Render(StatesGroup):
 
 
 def get_answer_content(context_key: TemplateVar):
-    if context_key.filter and context_key.filter.name == limit_to:
+    if context_key.filter and context_key.filter.name == filters.limit_to:
         text = f'Choose {context_key.name}'
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[[

@@ -1,5 +1,5 @@
 from aiogram import executor
-from handlers import dp
+from bot.handlers import dp
 
 
 def main():
