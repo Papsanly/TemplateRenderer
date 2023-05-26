@@ -29,7 +29,7 @@ pip install -r requirements.txt
 
 Run main.py
 ```shell
-python main.py [-h] [-o] template [context key-value pairs ...]
+python main.py [-h] [-o] template <context key-value pairs ...>
 ```
 
 Example
@@ -48,3 +48,9 @@ The `bot` directory contains a simple telegram bot.
 
 Provides user with a form to fill in the context values for the templates and sends the rendered
 pdf file.
+
+To run the bot reset CHROME_PATH to default value. Then build and run the docker image:
+```shell
+docker build -t bot:latest .
+docker run --name bot --env BOT_TOKEN=<your:bot-token> bot:latest
+```
