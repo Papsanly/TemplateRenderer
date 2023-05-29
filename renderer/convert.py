@@ -22,7 +22,7 @@ def convert_to_pdf(html: str, out_basename: str, tmp_basename: str):
         check=True
     )
 
-    os.remove(tmp_basename)
+    os.remove(tmp_filename)
 
 
 def get_shell_command(out_filename: str, tmp_filename: str) -> str:
