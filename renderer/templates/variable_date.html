@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;700&display=swap">
+  <style>
+
+    @page {
+      size: 500px 322px;
+      margin: 0;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    main {
+      width: 500px;
+      height: 322px;
+      color: white;
+      background: {% if type == 'Boeing 737' %}
+                    {% if duration == '30' %} #2ba7dc
+                    {% elif duration == '60' %} #2f84ed
+                    {% elif duration == '120' %} #6a60f2
+                    {% endif %}
+                  {% elif type == 'F/A-18 Hornet' %} #261e3f
+                  {% else %} #2f84ed
+                  {% endif %};
+      font-family: Montserrat, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+
+    .content {
+      line-height: 2.5rem;
+      text-align: center;
+      word-spacing: 3px;
+      letter-spacing: 1px;
+    }
+
+    .content h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .background-white {
+      background: #ffffff;
+      color: {% if type == 'Boeing 737' %}
+               {% if duration == '30' %} #2ba7dc
+               {% elif duration == '60' %} #2f84ed
+               {% elif duration == '120' %} #6a60f2
+               {% endif %}
+             {% elif type == 'F/A-18 Hornet' %} #261e3f
+             {% else %} #2f84ed
+             {% endif %};
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+    }
+
+    .background-blue {
+      background: {% if type == 'Boeing 737' %}
+                    {% if duration == '30' %} #24b8e5
+                    {% elif duration == '60' %} #1273eb
+                    {% elif duration == '120' %} #836dff
+                    {% endif %}
+                  {% elif type == 'F/A-18 Hornet' %} #6f3d87
+                  {% else %} #1273eb
+                  {% endif %};
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+    }
+
+    footer {
+      display: flex;
+      flex-direction: row;
+      align-items: end;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    footer .code {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0.4rem;
+    }
+
+    footer .code div {
+      border-radius: 0.5rem;
+      width: 110px;
+      height: 55px;
+      background: lightgray;
+      margin: 0.4rem;
+    }
+
+    footer .code p {
+      font-size: 0.8rem;
+    }
+
+    footer .date p {
+      font-size: 0.8rem;
+      font-weight: 400;
+      margin: 0.4rem;
+    }
+
+    .aviasim-logo {
+      display: flex;
+      align-items: center;
+      font-weight: 300;
+      background: {% if type == 'Boeing 737' %}
+                    {% if duration == '30' %} #24b8e5
+                    {% elif duration == '60' %} #1273eb
+                    {% elif duration == '120' %} #836dff
+                    {% endif %}
+                  {% elif type == 'F/A-18 Hornet' %} #6f3d87
+                  {% else %} #1273eb
+                  {% endif %};
+      border-radius: 0.5rem;
+      padding: 0 0.3rem;
+      margin: 0.4rem;
+    }
+
+    .aviasim-logo img {
+      height: 30px;
+    }
+
+    .aviasim-logo p {
+      margin: 0.5rem;
+    }
+
+    header {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      align-items: start;
+      justify-content: space-between;
+    }
+
+    .contacts {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .contacts div {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      line-height: 1.4rem;
+      font-size: 0.8rem;
+      text-align: end;
+      font-weight: 300;
+    }
+
+    .contacts div img {
+      height: 0.8rem;
+      margin: 0.4rem;
+    }
+
+    .contacts-phone {
+      font-size: 12px;
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="contacts">
+        <div>
+          <img src="images/location.svg" alt="contact-address"/>
+          <p>Київ, вул. Герцена, 35</p>
+        </div>
+        <div>
+          <img src="images/phone.svg" alt="contact-phone">
+          <p class="contacts-phone">+38 050 737 0 800</p>
+        </div>
+      </div>
+      <div class="aviasim-logo">
+        <img src="images/logo.svg" alt="aviasim-logo">
+        <p>Aviasim</p>
+      </div>
+    </header>
+    <section class="content">
+      <h1>
+        Подарунковий сертифікат
+      </h1>
+      <p>
+        На <span class="background-white">{{ duration }}</span> хвилин польоту на авіасимуляторі <br>
+        <span class="background-white">{{ type|limit_to('Boeing 737', 'F/A-18 Hornet', 'Beechcraft') }}</span> <br>
+        Забронюй на сайті <span class="background-blue">aviasim.com.ua</span>
+      </p>
+    </section>
+    <footer>
+      <div class="code">
+        <p>Код сертифікату <span class="background-white">{{ code }}</span></p>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
