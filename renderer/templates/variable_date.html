@@ -23,7 +23,7 @@
       width: 500px;
       height: 322px;
       color: white;
-      background: {% if type == 'Boeing 737' %}
+      background: {% if type == 'Boeing 737 MAX' %}
                     {% if duration == '30' %} #2ba7dc
                     {% elif duration == '60' %} #2f84ed
                     {% elif duration == '120' %} #6a60f2
@@ -54,7 +54,7 @@
 
     .background-white {
       background: #ffffff;
-      color: {% if type == 'Boeing 737' %}
+      color: {% if type == 'Boeing 737 MAX' %}
                {% if duration == '30' %} #2ba7dc
                {% elif duration == '60' %} #2f84ed
                {% elif duration == '120' %} #6a60f2
@@ -67,7 +67,7 @@
     }
 
     .background-blue {
-      background: {% if type == 'Boeing 737' %}
+      background: {% if type == 'Boeing 737 MAX' %}
                     {% if duration == '30' %} #24b8e5
                     {% elif duration == '60' %} #1273eb
                     {% elif duration == '120' %} #836dff
@@ -118,7 +118,7 @@
       display: flex;
       align-items: center;
       font-weight: 300;
-      background: {% if type == 'Boeing 737' %}
+      background: {% if type == 'Boeing 737 MAX' %}
                     {% if duration == '30' %} #24b8e5
                     {% elif duration == '60' %} #1273eb
                     {% elif duration == '120' %} #836dff
@@ -198,7 +198,7 @@
       </h1>
       <p>
         На <span class="background-white">{{ duration }}</span> хвилин польоту на авіасимуляторі <br>
-        <span class="background-white">{{ type|limit_to('Boeing 737', 'F/A-18 Hornet', 'Beechcraft') }}</span> <br>
+        <span class="background-white">{{ type|limit_to('Boeing 737 MAX', 'F/A-18 Hornet', 'Beechcraft') }}</span> <br>
         Забронюй на сайті <span class="background-blue">aviasim.com.ua</span>
       </p>
     </section>
