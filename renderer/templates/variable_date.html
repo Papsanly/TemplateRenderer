@@ -1,212 +1,90 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Certificate</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;700&display=swap">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <style>
-
-    @page {
-      size: 500px 322px;
-      margin: 0;
-    }
-
     * {
       padding: 0;
       margin: 0;
       box-sizing: border-box;
     }
 
-    main {
-      width: 500px;
-      height: 322px;
-      color: white;
-      background: {% if type == 'Boeing 737 MAX' %}
-                    {% if duration == '30' %} #2ba7dc
-                    {% elif duration == '60' %} #2f84ed
-                    {% elif duration == '120' %} #6a60f2
-                    {% endif %}
-                  {% elif type == 'F/A-18 Hornet' %} #261e3f
-                  {% else %} #2f84ed
-                  {% endif %};
-      font-family: Montserrat, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem;
-      overflow: hidden;
+    @page {
+      size: 1500px 750px;
+      margin: 0;
     }
-
-    .content {
-      line-height: 2.5rem;
-      text-align: center;
-      word-spacing: 3px;
-      letter-spacing: 1px;
-    }
-
-    .content h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .background-white {
-      background: #ffffff;
-      color: {% if type == 'Boeing 737 MAX' %}
-               {% if duration == '30' %} #2ba7dc
-               {% elif duration == '60' %} #2f84ed
-               {% elif duration == '120' %} #6a60f2
-               {% endif %}
-             {% elif type == 'F/A-18 Hornet' %} #261e3f
-             {% else %} #2f84ed
-             {% endif %};
-      padding: 0.2rem 0.5rem;
-      border-radius: 0.5rem;
-    }
-
-    .background-blue {
-      background: {% if type == 'Boeing 737 MAX' %}
-                    {% if duration == '30' %} #24b8e5
-                    {% elif duration == '60' %} #1273eb
-                    {% elif duration == '120' %} #836dff
-                    {% endif %}
-                  {% elif type == 'F/A-18 Hornet' %} #6f3d87
-                  {% else %} #1273eb
-                  {% endif %};
-      color: white;
-      padding: 0.2rem 0.5rem;
-      border-radius: 0.5rem;
-    }
-
-    footer {
-      display: flex;
-      flex-direction: row;
-      align-items: end;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    footer .code {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 0.4rem;
-    }
-
-    footer .code div {
-      border-radius: 0.5rem;
-      width: 110px;
-      height: 55px;
-      background: lightgray;
-      margin: 0.4rem;
-    }
-
-    footer .code p {
-      font-size: 0.8rem;
-    }
-
-    footer .date p {
-      font-size: 0.8rem;
-      font-weight: 400;
-      margin: 0.4rem;
-    }
-
-    .aviasim-logo {
-      display: flex;
-      align-items: center;
-      font-weight: 300;
-      background: {% if type == 'Boeing 737 MAX' %}
-                    {% if duration == '30' %} #24b8e5
-                    {% elif duration == '60' %} #1273eb
-                    {% elif duration == '120' %} #836dff
-                    {% endif %}
-                  {% elif type == 'F/A-18 Hornet' %} #6f3d87
-                  {% else %} #1273eb
-                  {% endif %};
-      border-radius: 0.5rem;
-      padding: 0 0.3rem;
-      margin: 0.4rem;
-    }
-
-    .aviasim-logo img {
-      height: 30px;
-    }
-
-    .aviasim-logo p {
-      margin: 0.5rem;
-    }
-
-    header {
-      display: flex;
-      width: 100%;
-      flex-direction: row;
-      align-items: start;
-      justify-content: space-between;
-    }
-
-    .contacts {
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-    }
-
-    .contacts div {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      line-height: 1.4rem;
-      font-size: 0.8rem;
-      text-align: end;
-      font-weight: 300;
-    }
-
-    .contacts div img {
-      height: 0.8rem;
-      margin: 0.4rem;
-    }
-
-    .contacts-phone {
-      font-size: 12px;
-    }
-
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <div class="contacts">
-        <div>
-          <img src="images/location.svg" alt="contact-address"/>
-          <p>Київ, вул. Герцена, 35</p>
+<div style="width: 1500px; height: 750px; position: relative; background: white">
+  <img style="width: 1500px; height: 750px; left: 0px; top: 0px; position: absolute" src="images/background.svg" />
+  <div style="height: 167px; left: 123px; top: 349px; position: absolute; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 40px; display: inline-flex">
+    <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Passenger:</div>
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 500; word-wrap: break-word">{{ full_name }}</div>
+    </div>
+    <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Departure Date:</div>
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 500; word-wrap: break-word">{{ date }}</div>
+    </div>
+    <div style="justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Arrival Time:</div>
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 500; word-wrap: break-word">{{ time }}</div>
+    </div>
+  </div>
+  <div style="height: 167px; left: 856px; top: 349px; position: absolute; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 40px; display: inline-flex">
+    <div style="justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Flight Duration:</div>
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 500; word-wrap: break-word">{{ duration }} minutes</div>
+    </div>
+    <div style="justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Seat Assignment:</div>
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 500; word-wrap: break-word">First Class</div>
+    </div>
+    <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 16px; display: inline-flex">
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Gate:</div>
+      <div style="color: #212121; font-size: 24px; font-family: Roboto; font-weight: 500; word-wrap: break-word">{{ gate }}</div>
+    </div>
+  </div>
+  <div style="left: 856px; top: 100px; position: absolute; color: rgba(33, 33, 33, 0.70); font-size: 34.16px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Flight Simulator Boarding Pass</div>
+  <img style="width: 556px; height: 85.71px; left: 856px; top: 613px; position: absolute" src="images/qr.svg" />
+  <div style="left: 123px; top: 49px; position: absolute; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 32px; display: inline-flex">
+    <div style="width: 433px; position: relative">
+      <div style="width: 134.12px; height: 97.84px; left: 0px; top: 0px; position: absolute; justify-content: center; align-items: center; display: inline-flex">
+      </div>
+    </div>
+    <div style="align-self: stretch; height: 80px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
+      <img src="images/logo.svg" alt="logo" />
+      <div style="align-self: stretch; height: 0px; border: 3px #B0CFFB solid"></div>
+      <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 16px; display: flex">
+        <div style="justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
+          <img src="images/location.svg" style="width: 16px; height: 20px">
+          <div style="color: #212121; font-size: 16px; font-family: Roboto; font-weight: 500; word-wrap: break-word">1 West Mountain Street, Unit 9, Pasadena, CA 91103</div>
         </div>
-        <div>
-          <img src="images/phone.svg" alt="contact-phone">
-          <p class="contacts-phone">+38 050 737 0 800</p>
+        <div style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 24px; display: inline-flex">
+          <div style="justify-content: flex-start; align-items: center; gap: 8px; display: flex">
+            <img src="images/phone.svg" style="width: 17.02px; height: 16.97px">
+            <div style="color: #212121; font-size: 16px; font-family: Roboto; font-weight: 500; word-wrap: break-word">(909) 204 - 8218</div>
+            </imgs>
+            <div style="justify-content: flex-start; align-items: center; gap: 8px; display: flex">
+              <img src="images/website.svg" style="width: 17.59px; height: 15.83px">
+              <div style="color: #212121; font-size: 16px; font-family: Roboto; font-weight: 500; word-wrap: break-word">WeFly.aero</div>
+              </img>
+              <div style="justify-content: flex-start; align-items: center; gap: 8px; display: flex">
+                <img style="width: 16.78px; height: 16.78px" src="images/instagram.svg">
+                <div><span style="color: #212121; font-size: 14px; font-family: Roboto; font-weight: 500; word-wrap: break-word">@</span><span style="color: #212121; font-size: 16px; font-family: Roboto; font-weight: 500; word-wrap: break-word">weflyaero</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="aviasim-logo">
-        <img src="images/logo.svg" alt="aviasim-logo">
-        <p>Aviasim</p>
+      <div style="width: 331.34px; height: 103.01px; left: 838px; top: 138px; position: absolute; justify-content: center; align-items: center; display: inline-flex">
+        <img src="images/plane.svg" style="width: 331.34px; height: 103.02px"/>
       </div>
-    </header>
-    <section class="content">
-      <h1>
-        Подарунковий сертифікат
-      </h1>
-      <p>
-        На <span class="background-white">{{ duration }}</span> хвилин польоту на авіасимуляторі <br>
-        <span class="background-white">{{ type|limit_to('Boeing 737 MAX', 'F/A-18 Hornet', 'Beechcraft') }}</span> <br>
-        Забронюй на сайті <span class="background-blue">aviasim.com.ua</span>
-      </p>
-    </section>
-    <footer>
-      <div class="code">
-        <p>Код сертифікату <span class="background-white">{{ code }}</span></p>
-      </div>
-    </footer>
-  </main>
+    </div>
 </body>
 </html>

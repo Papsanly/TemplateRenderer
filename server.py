@@ -21,11 +21,11 @@ def clean_temp_files():
 
 @app.get("/")
 async def generate_certificate(
-    simulator: str, duration: str, code: str, tasks: BackgroundTasks
+    full_name: str, date: str, time: str, duration: str, code: str, tasks: BackgroundTasks
 ):
     html = render_template(
         "variable_date.html",
-        {"type": simulator, "duration": duration, "code": code},
+        {"gate": "B737", "full_name": full_name, "date": date, "time": time, "duration": duration, "code": code},
     )
     print(html)
     convert_to_pdf(html, "out.pdf", "temp.html")
