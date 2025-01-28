@@ -21,7 +21,7 @@ def clean_temp_files():
 
 @app.get("/")
 async def generate_certificate(
-    simulator: str, duration: str, code: str, print_template: bool | None, tasks: BackgroundTasks
+    simulator: str, duration: str, code: str, tasks: BackgroundTasks, print_template: bool = False
 ):
     html = render_template(
         "print.html" if print_template else "variable_date.html",
