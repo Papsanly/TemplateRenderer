@@ -9,7 +9,7 @@
   <style>
     {% macro background() %}
       {% if type == 'Boeing 737' %}
-          {% elif duration == '60' %} #2f84ed
+          {% if duration == '60' %} #2f84ed
           {% elif duration == '120' %} #6a60f2
           {% endif %}
       {% elif type == 'F/A-18 Hornet' %} #261e3f
@@ -19,7 +19,7 @@
 
     {% macro background_alt() %}
       {% if type == 'Boeing 737' %}
-        {% elif duration == '60' %} #1273eb
+        {% if duration == '60' %} #1273eb
         {% elif duration == '120' %} #836dff
         {% endif %}
       {% elif type == 'F/A-18 Hornet' %} #6f3d87
@@ -29,7 +29,7 @@
 
     {% macro color() %}
       {% if type == 'Boeing 737' %}
-        {% elif duration == '60' %} #2f84ed
+        {% if duration == '60' %} #2f84ed
         {% elif duration == '120' %} #6a60f2
       {% endif %}
       {% elif type == 'F/A-18 Hornet' %} #261e3f
