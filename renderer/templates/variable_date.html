@@ -7,6 +7,38 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;700&display=swap">
   <style>
+    {% macro background() %}
+      {% if type == 'Boeing 737' %}
+          {% if duration == '30' %} #2ba7dc
+          {% elif duration == '60' %} #2f84ed
+          {% elif duration == '120' %} #6a60f2
+          {% endif %}
+      {% elif type == 'F/A-18 Hornet' %} #261e3f
+      {% else %} #2f84ed
+      {% endif %}
+    {% endmacro %}
+
+    {% macro background_alt() %}
+      {% if type == 'Boeing 737' %}
+        {% if duration == '30' %} #24b8e5
+        {% elif duration == '60' %} #1273eb
+        {% elif duration == '120' %} #836dff
+        {% endif %}
+      {% elif type == 'F/A-18 Hornet' %} #6f3d87
+      {% else %} #1273eb
+      {% endif %}
+    {% endmacro %}
+
+    {% macro color() %}
+      {% if type == 'Boeing 737' %}
+        {% if duration == '30' %} #2ba7dc
+        {% elif duration == '60' %} #2f84ed
+        {% elif duration == '120' %} #6a60f2
+      {% endif %}
+      {% elif type == 'F/A-18 Hornet' %} #261e3f
+      {% else %} #2f84ed
+      {% endif %}
+    {% endmacro %}
 
     @page {
       size: 500px 322px;
@@ -23,14 +55,7 @@
       width: 500px;
       height: 322px;
       color: white;
-      background: {% if type == 'Boeing 737' %}
-                    {% if duration == '30' %} #2ba7dc
-                    {% elif duration == '60' %} #2f84ed
-                    {% elif duration == '120' %} #6a60f2
-                    {% endif %}
-                  {% elif type == 'F/A-18 Hornet' %} #261e3f
-                  {% else %} #2f84ed
-                  {% endif %};
+      background: {{ background() }};
       font-family: Montserrat, sans-serif;
       display: flex;
       flex-direction: column;
@@ -54,27 +79,13 @@
 
     .background-white {
       background: #ffffff;
-      color: {% if type == 'Boeing 737' %}
-               {% if duration == '30' %} #2ba7dc
-               {% elif duration == '60' %} #2f84ed
-               {% elif duration == '120' %} #6a60f2
-               {% endif %}
-             {% elif type == 'F/A-18 Hornet' %} #261e3f
-             {% else %} #2f84ed
-             {% endif %};
+      color: {{ color() }};
       padding: 0.2rem 0.5rem;
       border-radius: 0.5rem;
     }
 
     .background-blue {
-      background: {% if type == 'Boeing 737' %}
-                    {% if duration == '30' %} #24b8e5
-                    {% elif duration == '60' %} #1273eb
-                    {% elif duration == '120' %} #836dff
-                    {% endif %}
-                  {% elif type == 'F/A-18 Hornet' %} #6f3d87
-                  {% else %} #1273eb
-                  {% endif %};
+      background: {{ background_alt() }};
       color: white;
       padding: 0.2rem 0.5rem;
       border-radius: 0.5rem;
@@ -118,14 +129,7 @@
       display: flex;
       align-items: center;
       font-weight: 300;
-      background: {% if type == 'Boeing 737' %}
-                    {% if duration == '30' %} #24b8e5
-                    {% elif duration == '60' %} #1273eb
-                    {% elif duration == '120' %} #836dff
-                    {% endif %}
-                  {% elif type == 'F/A-18 Hornet' %} #6f3d87
-                  {% else %} #1273eb
-                  {% endif %};
+      background: {{ background_alt() }};
       border-radius: 0.5rem;
       padding: 0 0.3rem;
       margin: 0.4rem;
