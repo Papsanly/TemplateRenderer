@@ -1,7 +1,4 @@
 import os
-import qrcode
-import base64
-from io import BytesIO
 from datetime import datetime
 
 from fastapi import FastAPI, BackgroundTasks
@@ -21,20 +18,6 @@ def clean_temp_files():
         os.remove(temp_filename)
     if os.path.exists(output_filename):
         os.remove(output_filename)
-
-
-def generate_qr_code(code: str) -> str:
-    """Generate QR code as base64 data URI"""
-    qr = qrcode.QRCode(version=1, box_size=10, border=4)
-    qr.add_data(f"https://wefly.aero/activate?code={code}")
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    
-    buffer = BytesIO()
-    img.save(buffer, format='PNG')
-    buffer.seek(0)
-    img_base64 = base64.b64encode(buffer.read()).decode()
-    return f"data:image/png;base64,{img_base64}"
 
 
 def map_simulator_to_gate(simulator: str) -> str:
@@ -73,9 +56,6 @@ async def generate_certificate(
     gate = map_simulator_to_gate(simulator)
     seat_class = map_duration_to_seat_class(duration_int)
     
-    # Generate QR code
-    qr_code_data = generate_qr_code(code)
-    
     # Format expiration date if provided
     if expiration:
         try:
@@ -96,7 +76,6 @@ async def generate_certificate(
             "gate": gate,
             "seat_class": seat_class,
             "expiration": expiration_formatted,
-            "qr_code": qr_code_data
         },
     )
     
