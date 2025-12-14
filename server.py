@@ -6,18 +6,22 @@ from fastapi.responses import FileResponse
 
 from renderer.config import OUTPUT_PATH
 from renderer.template import render_template
-from renderer.convert import convert_to_pdf
+from renderer.convert import convert_to_pdf, merge_pdfs
 
 app = FastAPI()
+
+# Path to WeFlyBack.pdf
+BACK_COVER_PATH = os.path.join(os.path.dirname(__file__), 'WeFlyBack.pdf')
 
 
 def clean_temp_files():
     temp_filename = os.path.join(OUTPUT_PATH, "temp.html")
     output_filename = os.path.join(OUTPUT_PATH, "out.pdf")
-    if os.path.exists(temp_filename):
-        os.remove(temp_filename)
-    if os.path.exists(output_filename):
-        os.remove(output_filename)
+    front_filename = os.path.join(OUTPUT_PATH, "front.pdf")
+    
+    for filename in [temp_filename, output_filename, front_filename]:
+        if os.path.exists(filename):
+            os.remove(filename)
 
 
 def map_simulator_to_gate(simulator: str) -> str:
@@ -79,10 +83,19 @@ async def generate_certificate(
         },
     )
     
-    convert_to_pdf(html, "out.pdf", "temp.html")
+    # Generate front page PDF
+    front_filename = os.path.join(OUTPUT_PATH, "front.pdf")
+    convert_to_pdf(html, "front.pdf", "temp.html")
+    
+    # Merge with back cover if exists
+    output_filename = os.path.join(OUTPUT_PATH, "out.pdf")
+    if os.path.exists(BACK_COVER_PATH):
+        merge_pdfs(front_filename, BACK_COVER_PATH, output_filename)
+    else:
+        # If back cover doesn't exist, just rename front to out
+        os.rename(front_filename, output_filename)
     
     if tasks:
         tasks.add_task(clean_temp_files)
     
-    output_filename = os.path.join(OUTPUT_PATH, "out.pdf")
     return FileResponse(output_filename)
