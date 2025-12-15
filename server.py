@@ -121,4 +121,4 @@ async def generate_certificate(
     if tasks:
         tasks.add_task(clean_temp_files)
     
-    return FileResponse(output_filename)
+    return FileResponse(output_filename, filename="WeFly-Gift-Card.pdf", media_type="application/pdf")
