@@ -34,10 +34,8 @@
     <path d="M1418 0C1463.29 0 1500 36.7127 1500 82V518C1500 563.287 1463.29 600 1418 600H82C36.7127 600 1.22425e-06 563.287 0 518V82C0 36.7127 36.7127 1.22411e-06 82 0H1418Z" fill="#1273EB" fill-opacity="0.14"/>
   </svg>
   
-  <!-- Snowflake decoration (Christmas only) -->
-  {% if occasion == 'christmas' %}
+  <!-- Snowflake decoration -->
   <img style="position: absolute; left: 531px; top: 88px; width: 438px; height: 425px; opacity: 1.0; transform: rotate(-35.3deg);" src="images/snowflake_45_.svg" alt="" />
-  {% endif %}
   
   <!-- Left section -->
   <div style="position: absolute; left: 123px; top: 49px;">
@@ -125,14 +123,14 @@
     
   </div>
   
-  <!-- Occasion message -->
-  {% if occasion == 'christmas' %}
-  <div style="position: absolute; left: 490px; top: 520px; width: 521px; text-align: center; font-weight: 700; font-size: 45px; line-height: 55px; color: #1273EB;">
-    &#127876; Merry Christmas! &#127876;
-  </div>
-  {% elif occasion == 'birthday' %}
+  <!-- Message -->
+  {% if is_birthday %}
   <div style="position: absolute; left: 490px; top: 520px; width: 521px; text-align: center; font-weight: 700; font-size: 45px; line-height: 55px; color: #1273EB;">
     &#127881; Happy Birthday! &#127881;
+  </div>
+  {% else %}
+  <div style="position: absolute; left: 490px; top: 520px; width: 521px; text-align: center; font-weight: 700; font-size: 45px; line-height: 55px; color: #1273EB;">
+    &#127876; Merry Christmas! &#127876;
   </div>
   {% endif %}
   
