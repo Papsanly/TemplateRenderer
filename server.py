@@ -68,6 +68,7 @@ async def generate_certificate(
     duration: str, 
     code: str, 
     expiration: str = None,
+    occasion: str = "christmas",
     tasks: BackgroundTasks = None
 ):
     # Convert duration to int
@@ -100,7 +101,8 @@ async def generate_certificate(
             "gate": gate,
             "seat_class": seat_class,
             "expiration": expiration_formatted,
-            "qr_code": qr_code_data
+            "qr_code": qr_code_data,
+            "occasion": occasion
         },
     )
     
