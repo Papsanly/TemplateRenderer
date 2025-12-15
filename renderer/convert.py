@@ -7,7 +7,6 @@ from .config import CHROME_PATH, OUTPUT_PATH, TEMPLATE_PATH
 
 
 def convert_to_pdf(html: str, out_basename: str, tmp_basename: str):
-
     tmp_filename = os.path.join(TEMPLATE_PATH, tmp_basename)
     out_filename = os.path.join(OUTPUT_PATH, out_basename)
 
@@ -26,7 +25,6 @@ def convert_to_pdf(html: str, out_basename: str, tmp_basename: str):
 
 
 def get_shell_command(out_filename: str, tmp_filename: str) -> str:
-
     if not os.path.exists(OUTPUT_PATH):
         os.makedirs(OUTPUT_PATH)
 
@@ -36,13 +34,18 @@ def get_shell_command(out_filename: str, tmp_filename: str) -> str:
     if not os.path.exists(CHROME_PATH):
         raise ValueError('CHROME_PATH does not exist')
 
+    # 1500px / 96dpi = 15.625 inches, 600px / 96dpi = 6.25 inches
     args = [
         f'"{CHROME_PATH}"',
         '--headless',
         '--no-sandbox',
         '--disable-gpu',
         '--no-margins',
-        f'--virtual-time-budget=1000',
+        '--print-to-pdf-no-header',
+        '--no-pdf-header-footer',
+        '--paper-width=15.625',
+        '--paper-height=6.25',
+        '--virtual-time-budget=2000',
         '--run-all-compositor-stages-before-draw',
         f'--print-to-pdf="{out_filename}"',
         f'"{tmp_filename}"'
@@ -52,7 +55,6 @@ def get_shell_command(out_filename: str, tmp_filename: str) -> str:
 
 
 async def convert_to_pdf_async(html: str, out_basename: str, tmp_basename: str) -> str:
-
     tmp_filename = os.path.join(TEMPLATE_PATH, tmp_basename)
     out_filename = os.path.join(OUTPUT_PATH, out_basename)
 
@@ -75,3 +77,21 @@ async def convert_to_pdf_async(html: str, out_basename: str, tmp_basename: str) 
     os.remove(tmp_filename)
 
     return stdout.decode().strip()
+
+
+def merge_pdfs(front_pdf: str, back_pdf: str, output_pdf: str):
+    from pypdf import PdfWriter
+
+    writer = PdfWriter()
+
+    if os.path.exists(front_pdf):
+        writer.append(front_pdf)
+
+    if os.path.exists(back_pdf):
+        writer.append(back_pdf)
+
+    writer.write(output_pdf)
+    writer.close()
+
+    if os.path.exists(front_pdf) and front_pdf != output_pdf:
+        os.remove(front_pdf)
