@@ -79,23 +79,19 @@ async def convert_to_pdf_async(html: str, out_basename: str, tmp_basename: str) 
 
 def merge_pdfs(front_pdf: str, back_pdf: str, output_pdf: str):
     """Merge two PDFs into one"""
-    try:
-        from PyPDF2 import PdfMerger
-    except ImportError:
-        # Try alternative import
-        from pypdf import PdfMerger
-    
-    merger = PdfMerger()
-    
+    from pypdf import PdfWriter
+
+    writer = PdfWriter()
+
     if os.path.exists(front_pdf):
-        merger.append(front_pdf)
-    
+        writer.append(front_pdf)
+
     if os.path.exists(back_pdf):
-        merger.append(back_pdf)
-    
-    merger.write(output_pdf)
-    merger.close()
-    
+        writer.append(back_pdf)
+
+    writer.write(output_pdf)
+    writer.close()
+
     # Clean up temporary files
     if os.path.exists(front_pdf) and front_pdf != output_pdf:
         os.remove(front_pdf)
