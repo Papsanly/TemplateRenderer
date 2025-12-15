@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WeFly Gift Certificate</title>
+  <title>WeFly Certificate - 20251215_011607</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@
   <!-- Gift code section (left bottom) -->
   <div style="position: absolute; left: 123px; top: 321px;">
     <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121; margin-bottom: 16px;">
-      GIFT CODE: {{ code }}
+      GIFT CODE: PHKOLY
     </div>
     
     <div style="display: flex; gap: 16px; align-items: flex-start;">
@@ -87,7 +87,7 @@
       </div>
       
       <!-- QR Code -->
-      <img style="width: 110px; height: 110px; flex-shrink: 0;" src="{{ qr_code }}" alt="QR Code" />
+      <img style="width: 110px; height: 110px; flex-shrink: 0;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAAEiAQAAAAB1xeIbAAACFklEQVR4nO2aTa7bIBRGzy1IGRIpC+hS6M66prcDeylvAZXwMBLW1wHgpLN2QINfYBBh+Qw+XW6u7w9QlxMxOUnK1F1q7/jG36xJ/SsVpWJnLezGahdByABOkqSR1Z+Zgpgojg5BKo+EjJScADdt35/Ssnm04KRlu8h+DKLrPahwN9brbsXvl2F0fVHKQxCwgcW0Y1G7h81nix+gV+l6B8qzGgAO2G4ytpssphvAbi/T9Q6U17HVenVQLB7upsPrWUdVf27qKZdvCb0TURmijmRnVPXnpqBkkS29LHmOlMuruhtV/bkptASV2FJ8PKqmOFpagTWu+nNT1LpW7QCWIEnJqdo+SFpGVX9uqnl7gtpJCPoz5syeQi+qBPhm9lz+Bq3PMON9V6rG9tJLC1KtZkMuZp9+35HiYefq6OnIMVONOTPe96E8bBeV+nX9nr2VChcnOxgbVv3JqRJaliARP/3RQdut7jazgdWfmqL1LF3NLOtR5OMjPON9L+r4pLYDWEIN9e1DMON9L8obgMWPK1bbaE4GLhubxwi/vIZVf24KHasMDqPU2jul1p09hV7UsVzrKdCq2aejGFX92anHPQUdJW3JbkJ+pa6vTz3dU3jq3z+ZPcyewv+g1msboMTPS0svt8uMOf0p+5mcyj2FclkBIOo+a6tO1NM9hTavdRnYfflZr0lzXtuHOtZjZPUYIc48pyv1G6T1i+Qgjs05AAAAAElFTkSuQmCC" alt="QR Code" />
     </div>
   </div>
   
@@ -105,19 +105,19 @@
     <!-- Flight details -->
     <div style="display: flex; flex-direction: column; gap: 22px; margin-top: 30px;">
       <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121;">
-        Valid until: <span style="font-weight: 500;">{{ expiration }}</span>
+        Valid until: <span style="font-weight: 500;">12/30/2026</span>
       </div>
       
       <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121;">
-        Gate: <span style="font-weight: 500;">{{ gate }}</span>
+        Gate: <span style="font-weight: 500;">Airbus A320</span>
       </div>
       
       <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121;">
-        Flight Duration: <span style="font-weight: 500;">{{ duration }} min</span>
+        Flight Duration: <span style="font-weight: 500;">60 min</span>
       </div>
       
       <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121;">
-        Seat Assignment: <span style="font-weight: 500;">{{ seat_class }}</span>
+        Seat Assignment: <span style="font-weight: 500;">Business Class</span>
       </div>
     </div>
     
