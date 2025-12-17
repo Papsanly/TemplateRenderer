@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 
 from renderer.config import OUTPUT_PATH
 from renderer.template import render_template
-from renderer.convert import convert_to_pdf
+from renderer.convert import convert_to_pdf, convert_to_png
 
 app = FastAPI()
 
@@ -28,7 +28,7 @@ async def startup_event():
 
 
 def clean_temp_files():
-    for fname in ["temp.html", "front.pdf"]:
+    for fname in ["temp.html", "front.pdf", "front.png"]:
         path = os.path.join(OUTPUT_PATH, fname)
         if os.path.exists(path):
             os.remove(path)
@@ -66,7 +66,7 @@ async def generate_certificate(
     is_birthday: bool = False,
     tasks: BackgroundTasks = None
 ):
-    """Generate front certificate only"""
+    """Generate front certificate PDF"""
     duration_int = int(duration)
     gate = map_simulator_to_gate(simulator)
     seat_class = map_duration_to_seat_class(duration_int)
@@ -97,9 +97,49 @@ async def generate_certificate(
     return FileResponse(front_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf")
 
 
+@app.get("/png")
+async def generate_certificate_png(
+    simulator: str,
+    duration: str,
+    code: str,
+    expiration: str = None,
+    is_birthday: bool = False,
+    tasks: BackgroundTasks = None
+):
+    """Generate front certificate as PNG"""
+    duration_int = int(duration)
+    gate = map_simulator_to_gate(simulator)
+    seat_class = map_duration_to_seat_class(duration_int)
+    qr_code_data = generate_qr_code(code)
+
+    if expiration:
+        try:
+            exp_date = datetime.fromisoformat(expiration.replace("Z", "+00:00"))
+            expiration_formatted = exp_date.strftime("%m/%d/%Y")
+        except:
+            expiration_formatted = expiration
+    else:
+        expiration_formatted = "12/31/2025"
+
+    html = render_template(
+        "wefly_certificate.html",
+        {"code": code, "simulator": simulator, "duration": duration, "gate": gate,
+         "seat_class": seat_class, "expiration": expiration_formatted,
+         "qr_code": qr_code_data, "is_birthday": is_birthday},
+    )
+
+    convert_to_png(html, "front.png", "temp.html")
+    front_path = os.path.join(OUTPUT_PATH, "front.png")
+
+    if tasks:
+        tasks.add_task(clean_temp_files)
+
+    return FileResponse(front_path, filename="WeFly-Gift-Card.png", media_type="image/png")
+
+
 @app.get("/back")
 async def get_back_cover():
-    """Get static back cover"""
+    """Get static back cover PDF"""
     if not os.path.exists(BACK_COVER_PATH):
         generate_back_cover()
     return FileResponse(BACK_COVER_PATH, filename="WeFly-Back.pdf", media_type="application/pdf")
