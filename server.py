@@ -9,26 +9,25 @@ from fastapi.responses import FileResponse
 
 from renderer.config import OUTPUT_PATH
 from renderer.template import render_template
-from renderer.convert import convert_to_pdf, convert_to_png
+from renderer.convert import convert_to_pdf, merge_pdfs
 
 app = FastAPI()
 
-BACK_COVER_PATH = os.path.join(OUTPUT_PATH, "back_cover.pdf")
+BACK_COVER_A4_PATH = os.path.join(OUTPUT_PATH, "back_cover_a4.pdf")
 
 
-def generate_back_cover():
-    # Always regenerate to pick up template changes
-    html = render_template("wefly_back.html", {})
-    convert_to_pdf(html, "back_cover.pdf", "back_temp.html")
+def generate_back_cover_a4():
+    html = render_template("wefly_back_a4.html", {})
+    convert_to_pdf(html, "back_cover_a4.pdf", "back_temp.html", a4=True)
 
 
 @app.on_event("startup")
 async def startup_event():
-    generate_back_cover()
+    generate_back_cover_a4()
 
 
 def clean_temp_files():
-    for fname in ["temp.html", "front.pdf", "front.png"]:
+    for fname in ["temp.html", "front.pdf", "front_a4.pdf", "out.pdf"]:
         path = os.path.join(OUTPUT_PATH, fname)
         if os.path.exists(path):
             os.remove(path)
@@ -57,6 +56,33 @@ def map_duration_to_seat_class(duration: int) -> str:
     return "Economy Class"
 
 
+def get_template_params(simulator: str, duration: str, code: str, expiration: str, is_birthday: bool):
+    duration_int = int(duration)
+    gate = map_simulator_to_gate(simulator)
+    seat_class = map_duration_to_seat_class(duration_int)
+    qr_code_data = generate_qr_code(code)
+
+    if expiration:
+        try:
+            exp_date = datetime.fromisoformat(expiration.replace("Z", "+00:00"))
+            expiration_formatted = exp_date.strftime("%m/%d/%Y")
+        except:
+            expiration_formatted = expiration
+    else:
+        expiration_formatted = "12/31/2025"
+
+    return {
+        "code": code, 
+        "simulator": simulator, 
+        "duration": duration, 
+        "gate": gate,
+        "seat_class": seat_class, 
+        "expiration": expiration_formatted,
+        "qr_code": qr_code_data, 
+        "is_birthday": is_birthday
+    }
+
+
 @app.get("/")
 async def generate_certificate(
     simulator: str,
@@ -66,29 +92,11 @@ async def generate_certificate(
     is_birthday: bool = False,
     tasks: BackgroundTasks = None
 ):
-    """Generate front certificate PDF"""
-    duration_int = int(duration)
-    gate = map_simulator_to_gate(simulator)
-    seat_class = map_duration_to_seat_class(duration_int)
-    qr_code_data = generate_qr_code(code)
-
-    if expiration:
-        try:
-            exp_date = datetime.fromisoformat(expiration.replace("Z", "+00:00"))
-            expiration_formatted = exp_date.strftime("%m/%d/%Y")
-        except:
-            expiration_formatted = expiration
-    else:
-        expiration_formatted = "12/31/2025"
-
-    html = render_template(
-        "wefly_certificate.html",
-        {"code": code, "simulator": simulator, "duration": duration, "gate": gate,
-         "seat_class": seat_class, "expiration": expiration_formatted,
-         "qr_code": qr_code_data, "is_birthday": is_birthday},
-    )
-
-    convert_to_pdf(html, "front.pdf", "temp.html")
+    """Generate front certificate only (original size)"""
+    params = get_template_params(simulator, duration, code, expiration, is_birthday)
+    html = render_template("wefly_certificate.html", params)
+    convert_to_pdf(html, "front.pdf", "temp.html", a4=False)
+    
     front_path = os.path.join(OUTPUT_PATH, "front.pdf")
 
     if tasks:
@@ -97,8 +105,8 @@ async def generate_certificate(
     return FileResponse(front_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf")
 
 
-@app.get("/png")
-async def generate_certificate_png(
+@app.get("/a4")
+async def generate_certificate_a4(
     simulator: str,
     duration: str,
     code: str,
@@ -106,40 +114,28 @@ async def generate_certificate_png(
     is_birthday: bool = False,
     tasks: BackgroundTasks = None
 ):
-    """Generate front certificate as PNG"""
-    duration_int = int(duration)
-    gate = map_simulator_to_gate(simulator)
-    seat_class = map_duration_to_seat_class(duration_int)
-    qr_code_data = generate_qr_code(code)
-
-    if expiration:
-        try:
-            exp_date = datetime.fromisoformat(expiration.replace("Z", "+00:00"))
-            expiration_formatted = exp_date.strftime("%m/%d/%Y")
-        except:
-            expiration_formatted = expiration
-    else:
-        expiration_formatted = "12/31/2025"
-
-    html = render_template(
-        "wefly_certificate.html",
-        {"code": code, "simulator": simulator, "duration": duration, "gate": gate,
-         "seat_class": seat_class, "expiration": expiration_formatted,
-         "qr_code": qr_code_data, "is_birthday": is_birthday},
-    )
-
-    convert_to_png(html, "front.png", "temp.html")
-    front_path = os.path.join(OUTPUT_PATH, "front.png")
+    """Generate 2-page A4 PDF (front + back) for printing"""
+    params = get_template_params(simulator, duration, code, expiration, is_birthday)
+    
+    # Generate front A4
+    html_front = render_template("wefly_certificate_a4.html", params)
+    convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
+    
+    front_path = os.path.join(OUTPUT_PATH, "front_a4.pdf")
+    output_path = os.path.join(OUTPUT_PATH, "out.pdf")
+    
+    # Merge front + back A4
+    merge_pdfs(front_path, BACK_COVER_A4_PATH, output_path)
 
     if tasks:
         tasks.add_task(clean_temp_files)
 
-    return FileResponse(front_path, filename="WeFly-Gift-Card.png", media_type="image/png")
+    return FileResponse(output_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf")
 
 
 @app.get("/back")
 async def get_back_cover():
-    """Get static back cover PDF"""
-    if not os.path.exists(BACK_COVER_PATH):
-        generate_back_cover()
-    return FileResponse(BACK_COVER_PATH, filename="WeFly-Back.pdf", media_type="application/pdf")
+    """Get static back cover A4 PDF"""
+    if not os.path.exists(BACK_COVER_A4_PATH):
+        generate_back_cover_a4()
+    return FileResponse(BACK_COVER_A4_PATH, filename="WeFly-Back.pdf", media_type="application/pdf")
