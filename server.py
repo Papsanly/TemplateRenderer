@@ -145,6 +145,32 @@ async def generate_certificate_a4(
     )
 
 
+@app.get("/a4-single")
+async def generate_certificate_a4_single(
+    simulator: str,
+    duration: str,
+    code: str,
+    expiration: str = None,
+    is_birthday: bool = False,
+    tasks: BackgroundTasks = None,
+):
+    """Generate single-page A4 PDF (for physical gift cards, no back cover)"""
+    params = get_template_params(simulator, duration, code, expiration, is_birthday)
+
+    # Generate front A4 only (no back page)
+    html_front = render_template("wefly_certificate_a4.html", params)
+    convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
+
+    front_path = os.path.join(OUTPUT_PATH, "front_a4.pdf")
+
+    if tasks:
+        tasks.add_task(clean_temp_files)
+
+    return FileResponse(
+        front_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf"
+    )
+
+
 @app.get("/png")
 async def generate_certificate_png(
     simulator: str,
