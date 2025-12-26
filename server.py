@@ -91,6 +91,13 @@ def get_template_params(
     }
 
 
+def get_template_name(simulator: str, a4: bool = False) -> str:
+    """Get template name based on simulator type"""
+    if simulator.lower() == "formula1":
+        return "wefly_certificate_a4_f1.html" if a4 else "wefly_certificate_f1.html"
+    return "wefly_certificate_a4.html" if a4 else "wefly_certificate.html"
+
+
 @app.get("/")
 async def generate_certificate(
     simulator: str,
@@ -102,7 +109,8 @@ async def generate_certificate(
 ):
     """Generate front certificate only (original size)"""
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
-    html = render_template("wefly_certificate.html", params)
+    template = get_template_name(simulator, a4=False)
+    html = render_template(template, params)
     convert_to_pdf(html, "front.pdf", "temp.html", a4=False)
 
     front_path = os.path.join(OUTPUT_PATH, "front.pdf")
@@ -128,7 +136,8 @@ async def generate_certificate_a4(
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
 
     # Generate front A4
-    html_front = render_template("wefly_certificate_a4.html", params)
+    template = get_template_name(simulator, a4=True)
+    html_front = render_template(template, params)
     convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
 
     front_path = os.path.join(OUTPUT_PATH, "front_a4.pdf")
@@ -158,7 +167,8 @@ async def generate_certificate_a4_single(
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
 
     # Generate front A4 only (no back page)
-    html_front = render_template("wefly_certificate_a4.html", params)
+    template = get_template_name(simulator, a4=True)
+    html_front = render_template(template, params)
     convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
 
     front_path = os.path.join(OUTPUT_PATH, "front_a4.pdf")
@@ -184,7 +194,8 @@ async def generate_certificate_png(
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
 
     # Use original 1500x600 template for PNG
-    html = render_template("wefly_certificate.html", params)
+    template = get_template_name(simulator, a4=False)
+    html = render_template(template, params)
     convert_to_png(html, "front.png", "temp.html")
 
     front_path = os.path.join(OUTPUT_PATH, "front.png")
