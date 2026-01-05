@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WeFly Gift Certificate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      @page {
+        size: 1500px 600px;
+        margin: 0;
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        width: 1500px;
+        height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="width: 1500px; height: 600px; position: relative; background: white">
+      <!-- Background rounded rectangle -->
+      <svg
+        style="position: absolute; left: 0; top: 0; width: 1500px; height: 600px"
+        viewBox="0 0 1500 600"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M1418 0C1463.29 0 1500 36.7127 1500 82V518C1500 563.287 1463.29 600 1418 600H82C36.7127 600 1.22425e-06 563.287 0 518V82C0 36.7127 36.7127 1.22411e-06 82 0H1418Z"
+          fill="#1273EB"
+          fill-opacity="0.14"
+        />
+      </svg>
+
+      <!-- CHRISTMAS_START -->
+      <!-- Snowflake decoration -->
+      <img
+        style="
+          position: absolute;
+          left: 480px;
+          top: 88px;
+          width: 438px;
+          height: 425px;
+          opacity: 1;
+          transform: rotate(-35.3deg);
+        "
+        src="images/snowflake_45_.svg"
+        alt=""
+      />
+      <!-- CHRISTMAS_END -->
+
+      <!-- Left section -->
+      <div style="position: absolute; left: 123px; top: 49px">
+        <!-- Logo -->
+        <div style="margin-bottom: 24px">
+          <img style="width: 440px; height: 120px" src="images/MainLogo.svg" alt="WeFly" />
+        </div>
+
+        <!-- Divider -->
+        <div style="width: 431px; height: 0; border: 3px solid #b0cffb; margin-bottom: 24px"></div>
+
+        <!-- Contact info -->
+        <div style="margin-bottom: 32px">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px">
+            <img style="width: 16px; height: 20px" src="images/location.svg" alt="" />
+            <div style="font-weight: 500; font-size: 16px; line-height: 20px; color: #212121">
+              1 West Mountain Street, Unit 9, Pasadena, CA 91103
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 24px">
+            <div style="display: flex; align-items: center; gap: 8px">
+              <img style="width: 17px; height: 17px" src="images/phone.svg" alt="" />
+              <div style="font-weight: 500; font-size: 16px; line-height: 20px; color: #212121">
+                (909) 204 - 8218
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px">
+              <img style="width: 18px; height: 16px" src="images/website.svg" alt="" />
+              <div style="font-weight: 500; font-size: 16px; line-height: 20px; color: #212121">
+                WeFly.aero
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px">
+              <img style="width: 17px; height: 17px" src="images/instagram.svg" alt="" />
+              <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: #212121">
+                @weflyaero
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gift code section (left bottom) -->
+      <div style="position: absolute; left: 123px; top: 321px">
+        <div
+          style="
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 29px;
+            color: #212121;
+            margin-bottom: 16px;
+          "
+        >
+          GIFT CODE: {{ code }}
+        </div>
+
+        <div style="display: flex; gap: 16px; align-items: flex-start">
+          <div
+            style="
+              font-weight: 500;
+              font-size: 24px;
+              line-height: 29px;
+              color: #000000;
+              max-width: 316px;
+            "
+          >
+            Go to <span style="font-weight: 700">wefly.aero/activate</span> or simply scan the QR
+            code to activate and book your flight experience →
+          </div>
+
+          <!-- QR Code -->
+          <img
+            style="width: 110px; height: 110px; flex-shrink: 0"
+            src="{{ qr_code }}"
+            alt="QR Code"
+          />
+        </div>
+      </div>
+
+      <!-- Right section -->
+      <div style="position: absolute; left: 856px; top: 100px">
+        <!-- Header -->
+        <div
+          style="
+            font-weight: 700;
+            font-size: 34px;
+            line-height: 42px;
+            color: #212121;
+            margin-bottom: 15px;
+          "
+        >
+          Formula 1 Simulator Pass
+        </div>
+
+        <!-- F1 car decoration under header -->
+        <img
+          style="width: 380px; height: 95px; margin-bottom: 21px; margin-left: 70px"
+          src="images/f1_frame.svg"
+          alt=""
+        />
+
+        <!-- Flight details -->
+        <div style="display: flex; flex-direction: column; gap: 22px; margin-top: 30px">
+          <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
+            Valid until: <span style="font-weight: 500">{{ expiration }}</span>
+          </div>
+
+          <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
+            Gate: <span style="font-weight: 500">{{ gate }}</span>
+          </div>
+
+          <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
+            Flight Duration: <span style="font-weight: 500">{{ duration }} min</span>
+          </div>
+
+          <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
+            Seat Assignment: <span style="font-weight: 500">{{ seat_class }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message -->
+      {% if is_birthday %}
+      <div
+        style="
+          position: absolute;
+          left: 200px;
+          top: 505px;
+          width: 1100px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 25px;
+        "
+      >
+        <img src="images/birthday.svg" style="width: 50px; height: 50px" alt="" />
+        <span style="font-weight: 700; font-size: 45px; line-height: 55px; color: #1273eb"
+          >Happy Birthday!</span
+        >
+        <img src="images/birthday.svg" style="width: 50px; height: 50px" alt="" />
+      </div>
+      <!-- CHRISTMAS_START -->
+      {% else %}
+      <div
+        style="
+          position: absolute;
+          left: 200px;
+          top: 505px;
+          width: 1100px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 25px;
+        "
+      >
+        <img src="images/christmas-tree.svg" style="width: 50px; height: 50px" alt="" />
+        <span style="font-weight: 700; font-size: 45px; line-height: 55px; color: #1273eb"
+          >Merry Christmas and Happy New Year!</span
+        >
+        <img src="images/christmas-tree.svg" style="width: 50px; height: 50px" alt="" />
+      </div>
+      <!-- CHRISTMAS_END -->
+      {% endif %}
+    </div>
+  </body>
+</html>
