@@ -3,3 +3,4 @@
 *.pdf
 */temp.html
 */output
+__pycache__

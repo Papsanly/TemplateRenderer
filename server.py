@@ -6,6 +6,7 @@ from io import BytesIO
 import qrcode
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.responses import FileResponse
+
 from renderer.config import OUTPUT_PATH
 from renderer.convert import convert_to_pdf, convert_to_png, merge_pdfs
 from renderer.template import render_template
@@ -16,7 +17,7 @@ BACK_COVER_A4_PATH = os.path.join(OUTPUT_PATH, "back_cover_a4.pdf")
 
 
 def generate_back_cover_a4():
-    html = render_template("wefly_back_a4.html", {})
+    html = render_template("aviasim_back_a4.html", {})
     convert_to_pdf(html, "back_cover_a4.pdf", "back_temp.html", a4=True)
 
 
@@ -34,7 +35,7 @@ def clean_temp_files():
 
 def generate_qr_code(code: str) -> str:
     qr = qrcode.QRCode(version=1, box_size=10, border=0)
-    qr.add_data(f"https://wefly.aero/activate/{code}")
+    qr.add_data(f"https://aviasim.com.ua/activate/{code}")
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     buffer = BytesIO()
@@ -94,8 +95,8 @@ def get_template_params(
 def get_template_name(simulator: str, a4: bool = False) -> str:
     """Get template name based on simulator type"""
     if simulator.lower() == "formula1":
-        return "wefly_certificate_a4_f1.html" if a4 else "wefly_certificate_f1.html"
-    return "wefly_certificate_a4.html" if a4 else "wefly_certificate.html"
+        return "aviasim_certificate_a4_f1.html" if a4 else "aviasim_certificate_f1.html"
+    return "aviasim_certificate_a4.html" if a4 else "aviasim_certificate.html"
 
 
 @app.get("/")
@@ -119,7 +120,7 @@ async def generate_certificate(
         tasks.add_task(clean_temp_files)
 
     return FileResponse(
-        front_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf"
+        front_path, filename="Aviasim-Gift-Card.pdf", media_type="application/pdf"
     )
 
 
@@ -150,7 +151,7 @@ async def generate_certificate_a4(
         tasks.add_task(clean_temp_files)
 
     return FileResponse(
-        output_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf"
+        output_path, filename="Aviasim-Gift-Card.pdf", media_type="application/pdf"
     )
 
 
@@ -177,7 +178,7 @@ async def generate_certificate_a4_single(
         tasks.add_task(clean_temp_files)
 
     return FileResponse(
-        front_path, filename="WeFly-Gift-Card.pdf", media_type="application/pdf"
+        front_path, filename="Aviasim-Gift-Card.pdf", media_type="application/pdf"
     )
 
 
@@ -204,7 +205,7 @@ async def generate_certificate_png(
         tasks.add_task(clean_temp_files)
 
     return FileResponse(
-        front_path, filename="WeFly-Gift-Card.png", media_type="image/png"
+        front_path, filename="Aviasim-Gift-Card.png", media_type="image/png"
     )
 
 

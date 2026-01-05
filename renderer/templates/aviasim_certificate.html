@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WeFly Gift Certificate</title>
+    <title>Aviasim Подарунковий сертифікат</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -45,28 +45,12 @@
         />
       </svg>
 
-      <!-- CHRISTMAS_START -->
-      <!-- Snowflake decoration -->
-      <img
-        style="
-          position: absolute;
-          left: 480px;
-          top: 88px;
-          width: 438px;
-          height: 425px;
-          opacity: 1;
-          transform: rotate(-35.3deg);
-        "
-        src="images/snowflake_45_.svg"
-        alt=""
-      />
-      <!-- CHRISTMAS_END -->
 
       <!-- Left section -->
       <div style="position: absolute; left: 123px; top: 49px">
         <!-- Logo -->
         <div style="margin-bottom: 24px">
-          <img style="width: 440px; height: 120px" src="images/MainLogo.svg" alt="WeFly" />
+          <img style="width: 440px; height: 120px" src="images/logo.svg" alt="Aviasim" />
         </div>
 
         <!-- Divider -->
@@ -76,8 +60,8 @@
         <div style="margin-bottom: 32px">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px">
             <img style="width: 16px; height: 20px" src="images/location.svg" alt="" />
-            <div style="font-weight: 500; font-size: 16px; line-height: 20px; color: #212121">
-              1 West Mountain Street, Unit 9, Pasadena, CA 91103
+            <div style="font-weight: 500; font-size: 14px; line-height: 20px; color: #212121">
+              м. Київ, вул. Герцена, 35 (внутрішній двір, окремий вхід між 4 та 5 секціями)
             </div>
           </div>
 
@@ -85,21 +69,21 @@
             <div style="display: flex; align-items: center; gap: 8px">
               <img style="width: 17px; height: 17px" src="images/phone.svg" alt="" />
               <div style="font-weight: 500; font-size: 16px; line-height: 20px; color: #212121">
-                (909) 204 - 8218
+                +380 50 737 0800
               </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px">
               <img style="width: 18px; height: 16px" src="images/website.svg" alt="" />
               <div style="font-weight: 500; font-size: 16px; line-height: 20px; color: #212121">
-                WeFly.aero
+                Сайт: aviasim.com.ua
               </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px">
               <img style="width: 17px; height: 17px" src="images/instagram.svg" alt="" />
               <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: #212121">
-                @weflyaero
+                @aviasimfly
               </div>
             </div>
           </div>
@@ -117,7 +101,7 @@
             margin-bottom: 16px;
           "
         >
-          GIFT CODE: {{ code }}
+          Подарунковий код: {{ code }}
         </div>
 
         <div style="display: flex; gap: 16px; align-items: flex-start">
@@ -130,8 +114,8 @@
               max-width: 316px;
             "
           >
-            Go to <span style="font-weight: 700">wefly.aero/activate</span> or simply scan the QR
-            code to activate and book your flight experience →
+            Перейдіть на <span style="font-weight: 700">aviasim.com.ua</span> або відскануйте
+            QR-код, щоб активувати та забронювати свій політ →
           </div>
 
           <!-- QR Code -->
@@ -155,32 +139,28 @@
             margin-bottom: 15px;
           "
         >
-          Formula 1 Simulator Pass
+          Посадковий талон на авіасимулятор
         </div>
 
-        <!-- F1 car decoration under header -->
+        <!-- Plane decoration under header -->
         <img
-          style="width: 380px; height: 95px; margin-bottom: 21px; margin-left: 70px"
-          src="images/f1_frame.svg"
+          style="width: 331px; height: 82px; margin-bottom: 21px; margin-left: 95px"
+          src="images/plane outline 1.svg"
           alt=""
         />
 
         <!-- Flight details -->
         <div style="display: flex; flex-direction: column; gap: 22px; margin-top: 30px">
           <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
-            Valid until: <span style="font-weight: 500">{{ expiration }}</span>
+            Тривалість польоту: <span style="font-weight: 500">{{ duration }} хвилин</span>
           </div>
 
           <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
-            Gate: <span style="font-weight: 500">{{ gate }}</span>
+            Клас обслуговування: <span style="font-weight: 500">{{ seat_class }}</span>
           </div>
 
           <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
-            Flight Duration: <span style="font-weight: 500">{{ duration }} min</span>
-          </div>
-
-          <div style="font-weight: 700; font-size: 24px; line-height: 29px; color: #212121">
-            Seat Assignment: <span style="font-weight: 500">{{ seat_class }}</span>
+            Симулятор: <span style="font-weight: 500">{{ simulator }}</span>
           </div>
         </div>
       </div>
@@ -202,32 +182,10 @@
       >
         <img src="images/birthday.svg" style="width: 50px; height: 50px" alt="" />
         <span style="font-weight: 700; font-size: 45px; line-height: 55px; color: #1273eb"
-          >Happy Birthday!</span
+          >З Днем народження!</span
         >
         <img src="images/birthday.svg" style="width: 50px; height: 50px" alt="" />
       </div>
-      <!-- CHRISTMAS_START -->
-      {% else %}
-      <div
-        style="
-          position: absolute;
-          left: 200px;
-          top: 505px;
-          width: 1100px;
-          text-align: center;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 25px;
-        "
-      >
-        <img src="images/christmas-tree.svg" style="width: 50px; height: 50px" alt="" />
-        <span style="font-weight: 700; font-size: 45px; line-height: 55px; color: #1273eb"
-          >Merry Christmas and Happy New Year!</span
-        >
-        <img src="images/christmas-tree.svg" style="width: 50px; height: 50px" alt="" />
-      </div>
-      <!-- CHRISTMAS_END -->
       {% endif %}
     </div>
   </body>
