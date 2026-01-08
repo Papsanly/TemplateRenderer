@@ -15,9 +15,6 @@ on:
 jobs:
   switch-theme:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,11 +29,20 @@ jobs:
       - name: Run theme switch script
         run: python scripts/switch_theme.py ${{ github.event.inputs.theme }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+      - name: Show changed files
+        run: |
+          echo "Changed files:"
+          git diff --name-only
+          echo ""
+          echo "To apply these changes, run:"
+          echo "git pull origin wefly"
+          echo "Then commit and push manually"
+
+      - name: Upload changes as artifact
+        uses: actions/upload-artifact@v4
         with:
-          commit-message: "Switch theme to ${{ github.event.inputs.theme }}"
-          branch: theme-${{ github.event.inputs.theme }}-${{ github.run_number }}
-          title: "Switch theme to ${{ github.event.inputs.theme }}"
-          body: "Automated theme switch"
-          base: wefly
+          name: theme-changes-${{ github.event.inputs.theme }}
+          path: |
+            renderer/templates/
+            *.html
+          retention-days: 7
