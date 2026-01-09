@@ -32,35 +32,34 @@ def comment_christmas_block(content: str) -> str:
         block_content = match.group(2)
         end_marker = match.group(3)
 
-        # Check if already commented
-        if "<!-- DISABLED" in block_content:
+        # Check if already commented with Jinja2
+        if "{# DISABLED" in block_content:
             return match.group(0)
 
-        # Comment out the entire block
-        lines = block_content.split("\n")
-        commented_lines = ["  <!-- DISABLED"]
-        for line in lines:
-            if line.strip():  # Only add non-empty lines
-                commented_lines.append(line)
-        commented_lines.append("  -->")
-
-        return start_marker + "\n".join(commented_lines) + "\n" + end_marker
+        # Comment out the entire block using Jinja2 comments
+        return start_marker + "  {# DISABLED\n" + block_content + "  #}\n" + end_marker
 
     return re.sub(pattern, replace_func, content, flags=re.DOTALL)
 
 
 def uncomment_christmas_block(content: str) -> str:
     """Uncomment content between CHRISTMAS_START and CHRISTMAS_END markers."""
-    pattern = r"(  <!-- CHRISTMAS_START -->\n)  <!-- DISABLED\n(.*?)\n  -->\n(  <!-- CHRISTMAS_END -->)"
+    # Try Jinja2 comments first
+    pattern_jinja = r"(  <!-- CHRISTMAS_START -->\n)  {# DISABLED\n(.*?)  #}\n(  <!-- CHRISTMAS_END -->)"
 
     def replace_func(match):
         start_marker = match.group(1)
         block_content = match.group(2)
         end_marker = match.group(3)
+        return start_marker + block_content + end_marker
 
-        return start_marker + block_content + "\n" + end_marker
+    content = re.sub(pattern_jinja, replace_func, content, flags=re.DOTALL)
 
-    return re.sub(pattern, replace_func, content, flags=re.DOTALL)
+    # Also try old HTML comments format
+    pattern_html = r"(  <!-- CHRISTMAS_START -->\n)  <!-- DISABLED\n(.*?)\n  -->\n(  <!-- CHRISTMAS_END -->)"
+    content = re.sub(pattern_html, replace_func, content, flags=re.DOTALL)
+
+    return content
 
 
 def show_diff(filename: str, old_content: str, new_content: str):
