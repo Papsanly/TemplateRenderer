@@ -53,11 +53,12 @@ def map_simulator_to_gate(simulator: str) -> str:
 
 
 def map_duration_to_seat_class(duration: int) -> str:
+    """Map current plans and legacy gift-card durations to their purchased class."""
     if duration == 30:
         return "Economy Class"
-    elif duration == 60:
+    elif duration in (50, 60):
         return "Business Class"
-    elif duration == 120:
+    elif duration in (110, 120):
         return "First Class"
     return "Economy Class"
 
