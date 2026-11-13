@@ -42,6 +42,34 @@ You can also see context keys required for a template with `--ctx` argument
 python main.py template_name.html --ctx
 ```
 
+# Aviasim gift certificate server
+
+`server.py` renders the gift certificate aviasim.com.ua attaches to gift emails. Every endpoint
+takes `code`, `simulator`, `duration`, and optionally `expiration` (ISO date) and `is_birthday`.
+
+| Endpoint | Output | Templates |
+| --- | --- | --- |
+| `/a4` | 2-page A4 PDF: certificate + simulator rules | `aviasim_certificate_a4.html`, `aviasim_back_a4.html` |
+| `/a4-single` | A4 PDF, certificate page only | `aviasim_certificate_a4.html` |
+| `/back` | A4 PDF, rules page only | `aviasim_back_a4.html` |
+| `/` | 1500x600 PDF of the boarding pass | `aviasim_certificate.html` |
+| `/png` | 1500x600 PNG of the boarding pass | `aviasim_certificate.html` |
+
+One template per format serves all three simulators. The QR code links to
+`https://aviasim.com.ua/activate/<code>`. With `expiration` the pass prints the date as
+`dd.mm.yyyy`; without it the pass states the term, one year, instead of inventing a day. Shared
+styles live in `renderer/templates/partials/aviasim_gift.css`; the Manrope font (Latin and
+Cyrillic) and the photos are bundled under `renderer/templates/`, so rendering needs no network.
+
+Run it locally by pointing `CHROME_PATH` at your Chrome:
+```shell
+CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" fastapi dev server.py
+python -m unittest test_gift_card
+```
+
+`python scripts/switch_theme.py christmas|default` turns the New Year and Christmas greeting on
+the pass on and off.
+
 # [Telegram Bot](https://core.telegram.org/bots/api)
 
 The `bot` directory contains a simple telegram bot. 

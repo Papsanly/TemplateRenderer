@@ -1,28 +1,38 @@
 import base64
 import os
 from datetime import datetime
-from io import BytesIO
+from urllib.parse import quote
 
 import qrcode
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.responses import FileResponse
-
 from renderer.config import OUTPUT_PATH
 from renderer.convert import convert_to_pdf, convert_to_png, merge_pdfs
 from renderer.template import render_template
 
 app = FastAPI()
 
+ACTIVATION_URL = "https://aviasim.com.ua/activate"
+
+# The rules page is the same for every simulator, so it is rendered once and reused.
 BACK_COVER_A4_PATH = os.path.join(OUTPUT_PATH, "back_cover_a4.pdf")
 
 
-def generate_back_cover_a4():
+def generate_back_cover_a4() -> str:
     html = render_template("aviasim_back_a4.html", {})
-    convert_to_pdf(html, "back_cover_a4.pdf", "back_temp.html", a4=True)
+    convert_to_pdf(html, os.path.basename(BACK_COVER_A4_PATH), "back_temp.html", a4=True)
+    return BACK_COVER_A4_PATH
+
+
+def get_back_cover_a4() -> str:
+    if not os.path.exists(BACK_COVER_A4_PATH):
+        generate_back_cover_a4()
+    return BACK_COVER_A4_PATH
 
 
 @app.on_event("startup")
 async def startup_event():
+    # Always re-render on startup so a deploy never serves a back page from the previous design.
     generate_back_cover_a4()
 
 
@@ -33,34 +43,65 @@ def clean_temp_files():
             os.remove(path)
 
 
+def build_activation_url(code: str) -> str:
+    """Link that opens the activation page with this gift code already filled in."""
+    return f"{ACTIVATION_URL}/{quote(code.strip(), safe='')}"
+
+
 def generate_qr_code(code: str) -> str:
-    qr = qrcode.QRCode(version=1, box_size=10, border=0)
-    qr.add_data(f"https://aviasim.com.ua/activate/{code}")
+    """QR code for the gift code's activation link, as an SVG data URI.
+
+    Vector, so it stays sharp at any print size. The standard 4-module quiet zone is part of the
+    image, so the code scans wherever a template places it.
+    """
+    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, border=4)
+    qr.add_data(build_activation_url(code))
     qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    buffer = BytesIO()
-    img.save(buffer, format="PNG")
-    buffer.seek(0)
-    return f"data:image/png;base64,{base64.b64encode(buffer.read()).decode()}"
+    matrix = qr.get_matrix()  # includes the quiet zone
+    size = len(matrix)
+
+    # One path of horizontal runs: a single fill leaves no hairline seams between modules.
+    runs = []
+    for y, row in enumerate(matrix):
+        x = 0
+        while x < size:
+            if not row[x]:
+                x += 1
+                continue
+            start = x
+            while x < size and row[x]:
+                x += 1
+            runs.append(f"M{start} {y}h{x - start}v1h{start - x}z")
+
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" '
+        f'shape-rendering="crispEdges"><rect width="{size}" height="{size}" fill="#fff"/>'
+        f'<path fill="#000" d="{"".join(runs)}"/></svg>'
+    )
+    return f"data:image/svg+xml;base64,{base64.b64encode(svg.encode()).decode()}"
 
 
 def map_simulator_to_gate(simulator: str) -> str:
+    """The site sends the display name; the keys are accepted too."""
     mapping = {
-        "airbus320": "Airbus A320",
-        "boeing737": "Boeing 737 MAX",
-        "formula1": "Formula 1",
+        "boeing737": "Boeing 737",
+        "f18": "F/A-18 Hornet",
+        "cessna": "Cessna",
     }
     return mapping.get(simulator.lower(), simulator)
 
 
 def map_duration_to_seat_class(duration: int) -> str:
-    if duration == 30:
-        return "Economy Class"
-    elif duration == 60:
-        return "Business Class"
-    elif duration == 120:
-        return "First Class"
-    return "Economy Class"
+    """Session length to the class printed on the pass.
+
+    The plans are 30 and 50 minutes on the Cessna, 50 and 100 on the F/A-18, 60 and 120 on the
+    Boeing 737. Ranges rather than exact values, so a new plan length still gets a sensible class.
+    """
+    if duration <= 30:
+        return "Економ-клас"
+    if duration <= 60:
+        return "Бізнес-клас"
+    return "Перший клас"
 
 
 def get_template_params(
@@ -71,14 +112,14 @@ def get_template_params(
     seat_class = map_duration_to_seat_class(duration_int)
     qr_code_data = generate_qr_code(code)
 
+    # Without a date the pass states the term ("1 рік") instead of inventing a day.
+    expiration_formatted = None
     if expiration:
         try:
             exp_date = datetime.fromisoformat(expiration.replace("Z", "+00:00"))
-            expiration_formatted = exp_date.strftime("%m/%d/%Y")
-        except:
+            expiration_formatted = exp_date.strftime("%d.%m.%Y")
+        except ValueError:
             expiration_formatted = expiration
-    else:
-        expiration_formatted = "12/31/2025"
 
     return {
         "code": code,
@@ -92,10 +133,8 @@ def get_template_params(
     }
 
 
-def get_template_name(simulator: str, a4: bool = False) -> str:
-    """Get template name based on simulator type"""
-    if simulator.lower() == "formula1":
-        return "aviasim_certificate_a4_f1.html" if a4 else "aviasim_certificate_f1.html"
+def get_template_name(a4: bool = False) -> str:
+    """One template per format serves every simulator."""
     return "aviasim_certificate_a4.html" if a4 else "aviasim_certificate.html"
 
 
@@ -110,7 +149,7 @@ async def generate_certificate(
 ):
     """Generate front certificate only (original size)"""
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
-    template = get_template_name(simulator, a4=False)
+    template = get_template_name(a4=False)
     html = render_template(template, params)
     convert_to_pdf(html, "front.pdf", "temp.html", a4=False)
 
@@ -137,7 +176,7 @@ async def generate_certificate_a4(
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
 
     # Generate front A4
-    template = get_template_name(simulator, a4=True)
+    template = get_template_name(a4=True)
     html_front = render_template(template, params)
     convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
 
@@ -145,7 +184,7 @@ async def generate_certificate_a4(
     output_path = os.path.join(OUTPUT_PATH, "out.pdf")
 
     # Merge front + back A4
-    merge_pdfs(front_path, BACK_COVER_A4_PATH, output_path)
+    merge_pdfs(front_path, get_back_cover_a4(), output_path)
 
     if tasks:
         tasks.add_task(clean_temp_files)
@@ -168,7 +207,7 @@ async def generate_certificate_a4_single(
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
 
     # Generate front A4 only (no back page)
-    template = get_template_name(simulator, a4=True)
+    template = get_template_name(a4=True)
     html_front = render_template(template, params)
     convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
 
@@ -195,7 +234,7 @@ async def generate_certificate_png(
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
 
     # Use original 1500x600 template for PNG
-    template = get_template_name(simulator, a4=False)
+    template = get_template_name(a4=False)
     html = render_template(template, params)
     convert_to_png(html, "front.png", "temp.html")
 
@@ -212,8 +251,6 @@ async def generate_certificate_png(
 @app.get("/back")
 async def get_back_cover():
     """Get static back cover A4 PDF"""
-    if not os.path.exists(BACK_COVER_A4_PATH):
-        generate_back_cover_a4()
     return FileResponse(
-        BACK_COVER_A4_PATH, filename="WeFly-Back.pdf", media_type="application/pdf"
+        get_back_cover_a4(), filename="Aviasim-Back.pdf", media_type="application/pdf"
     )

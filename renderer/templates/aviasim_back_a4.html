@@ -1,36 +1,145 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>WeFly Back Cover - A4</title>
+  <title>Aviasim — правила</title>
+  {# Back page of the A4 gift certificate: the rules for all three simulators. Needs no context. #}
   <style>
-    * { padding: 0; margin: 0; box-sizing: border-box; }
+    {% include "partials/aviasim_gift.css" %}
+
     @page { size: A4; margin: 0; }
-    body {
-      width: 210mm;
-      height: 297mm;
-      display: flex;
-      justify-content: center;
-      padding-top: 10mm;
-      background: white;
-    }
-    .back-cover {
-      width: 200mm;
-      height: 80mm;
+
+    html, body { width: 794px; height: 1122px; overflow: hidden; background: #fff; }
+
+    .page {
       position: relative;
+      width: 794px;
+      height: 1123px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
     }
+
+    .banner { position: relative; height: 200px; flex: none; overflow: hidden; background: #0d1a3f; }
+    .banner__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .banner__shade { position: absolute; inset: 0; background: linear-gradient(to right, rgba(13,26,63,.92), rgba(13,26,63,.5)); }
+    .banner__copy {
+      position: absolute; left: 48px; right: 48px; top: 44px; bottom: 34px;
+      display: flex; flex-direction: column; justify-content: space-between; color: #fff;
+    }
+    .banner .brand { gap: 10px; font-size: 22px; }
+    .banner .brand img { width: 30px; height: 27px; }
+    .banner__title { display: flex; flex-direction: column; gap: 6px; }
+    .banner__kicker { font-size: 11px; letter-spacing: .22em; font-weight: 600; color: rgba(255,255,255,.75); }
+    .banner h2 { margin: 0; font-size: 34px; line-height: 1.05; font-weight: 300; letter-spacing: -.02em; white-space: nowrap; }
+    .banner h2 b { font-weight: 700; }
+
+    .body { flex: 1; padding: 28px 48px 40px; display: flex; flex-direction: column; gap: 22px; }
+
+    .note {
+      padding: 16px 20px; border-radius: 16px; background: #e8f1fc;
+      display: flex; gap: 14px; align-items: center;
+      color: #234e92; font-size: 13px; line-height: 1.5;
+    }
+    .note svg { flex: none; }
+    .note b { font-weight: 700; }
+
+    .rules {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 34px;
+      font-size: 12px; line-height: 1.6; color: rgba(13,26,63,.78);
+    }
+    .rule { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #d1e3f9; }
+    .rule__head { display: flex; align-items: baseline; gap: 10px; }
+    .rule__head i { font-style: normal; font-size: 11px; font-weight: 600; letter-spacing: .1em; color: #377ae4; }
+    .rule__head b { font-size: 13.5px; font-weight: 700; letter-spacing: .02em; color: #0d1a3f; }
+    .rule ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .rule li { display: flex; gap: 8px; text-wrap: pretty; }
+    .rule li::before { content: "—"; flex: none; color: #377ae4; }
+
+    .contacts {
+      margin-top: auto; padding-top: 16px; border-top: 1px solid #d1e3f9;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px;
+      font-size: 11.5px; font-weight: 500; line-height: 1.5; color: rgba(13,26,63,.7);
+    }
+    .contacts b { display: block; margin-bottom: 3px; font-size: 10px; letter-spacing: .18em; color: rgba(13,26,63,.5); }
   </style>
 </head>
 <body>
-<div class="back-cover">
-  <!-- Background with fill -->
-  <svg style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;" viewBox="0 0 1500 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <path d="M1418 0C1463.29 0 1500 36.7127 1500 82V518C1500 563.287 1463.29 600 1418 600H82C36.7127 600 1.22425e-06 563.287 0 518V82C0 36.7127 36.7127 1.22411e-06 82 0H1418Z" fill="#1273EB" fill-opacity="0.14"/>
-  </svg>
-  <!-- Logo centered -->
-  <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-    <img style="width: 50mm;" src="images/AlternativeLogo.svg" alt="WeFly" />
+<div class="page">
+
+  <div class="banner">
+    <img class="banner__photo" src="images/gift/back-flight.jpg" alt="">
+    <div class="banner__shade"></div>
+    <div class="banner__copy">
+      <div class="brand"><img src="images/aviasim-mark-white.svg" alt="">Aviasim</div>
+      <div class="banner__title">
+        <div class="banner__kicker">ЗАГАЛЬНІ ПРАВИЛА ЩОДО ВИКОРИСТАННЯ НАШИХ АВІАСИМУЛЯТОРІВ</div>
+        <h2>Обмеження <b>симуляторів</b></h2>
+      </div>
+    </div>
   </div>
+
+  <div class="body">
+    <div class="note">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3460a8" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+      <span><b>Сертифікат дійсний 1 рік з дати покупки.</b> Введіть код на aviasim.com.ua/activate та оберіть зручну дату й час. Пн–Сб 10:00–22:00, лише за попереднім записом.</span>
+    </div>
+
+    <div class="rules">
+      <div class="rule">
+        <div class="rule__head"><i>01</i><b>ВІК ДИТИНИ</b></div>
+        <ul>
+          <li>Boeing 737: діти до 8 років не допускаються; 8–12 років — лише у супроводі дорослих.</li>
+          <li>F/A-18 Hornet і Cessna: діти до 12 років не допускаються.</li>
+          <li>Адміністратор може попросити документ, що підтверджує вік дитини.</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>02</i><b>ВАГА</b></div>
+        <ul>
+          <li>Максимальна вага людини — 110 кг.</li>
+          <li>Boeing 737: загальна вага двох відвідувачів — до 210 кг; у кабіні максимум 3 особи (2 відвідувачі та інструктор).</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>03</i><b>ЗАБОРОНЯЄТЬСЯ</b></div>
+        <ul>
+          <li>Порушувати правила безпеки та не виконувати вказівки пілота-інструктора.</li>
+          <li>Знаходження сторонніх осіб у кабіні без пілота-інструктора.</li>
+          <li>Брати із собою сторонні предмети, продукти харчування та тварин.</li>
+          <li>Застосовувати фізичні зусилля до системи керування тренажера, важелів, кнопок, перемикачів, кранів.</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>04</i><b>НЕ ДОПУСКАЮТЬСЯ</b></div>
+        <ul>
+          <li>Вагітні жінки.</li>
+          <li>Особи в стані алкогольного чи наркотичного сп’яніння.</li>
+          <li>VR-симулятори (F/A-18, Cessna): особи з захворюваннями шкіри, порушеннями вестибулярного апарату чи розладами нервової системи.</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>05</i><b>VR-ШОЛОМ</b></div>
+        <ul>
+          <li>Якщо ви носите окуляри, по можливості замініть їх на лінзи — великі окуляри можуть не підійти під розмір VR-шолома.</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>06</i><b>ПОРУШЕННЯ ПРАВИЛ</b></div>
+        <ul>
+          <li>Особи, які грубо порушують правила, усуваються від польоту, вартість квитка не повертається.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="contacts">
+      <div><b>АДРЕСА</b>м. Київ, вул. Герцена, 35<br>внутрішній двір, окремий вхід між 4 та 5 секціями</div>
+      <div><b>ТЕЛЕФОН</b>+380 50 737 08 00</div>
+      <div><b>ОНЛАЙН</b>info@aviasim.com.ua<br>aviasim.com.ua · @aviasimfly</div>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
