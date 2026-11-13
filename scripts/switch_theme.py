@@ -15,11 +15,11 @@ from pathlib import Path
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "..", "renderer", "templates")
 
+# Each of these carries a CHRISTMAS_START/END block that turns on the Christmas greeting pill
+# for gift cards that are not birthday ones. Formula 1 cards use the same two templates.
 TEMPLATE_FILES = [
     "wefly_certificate.html",
-    "wefly_certificate_f1.html",
     "wefly_certificate_a4.html",
-    "wefly_certificate_a4_f1.html",
 ]
 
 

@@ -1,0 +1,281 @@
+/*
+  Shared styles for the WeFly gift card templates (A4 certificate, 1500x600 card and their backs).
+  Pulled into each template's <style> block with a Jinja include, so URLs here resolve relative to
+  renderer/templates/ — the folder the rendered HTML is written to before Chrome prints it.
+  This file goes through Jinja too: keep template syntax out of the comments.
+*/
+
+/* Bundled so a render never waits on (or fails without) Google Fonts. Latin subset, weights 300-800. */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: block;
+  src: url('fonts/Manrope-latin.woff2') format('woff2');
+}
+
+* {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  color: #0d1a3f;
+}
+
+/* ---------- Boarding pass ---------- */
+
+/*
+  The two notches on the tear line are real cut-outs, so whatever sits behind the pass shows
+  through. They are cut with a vector clip-path rather than a CSS mask: Chrome rasterises masked
+  content when printing, which would turn the pass text and QR code into a blurry bitmap in the PDF.
+  The path is the pass outline: 24px corners, 12px notches centred 215px from the right. The size
+  is fixed because the path needs it — 289.2px is what the stub (label + QR tile + hint) adds up to.
+*/
+.pass {
+  position: relative;
+  display: flex;
+  flex: none;
+  width: 698px;
+  height: 289.2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(to right, #306bc9, #2258b5);
+  color: #fff;
+  clip-path: path(
+    'M24 0H471A12 12 0 0 0 495 0H674A24 24 0 0 1 698 24V265.2A24 24 0 0 1 674 289.2H495A12 12 0 0 0 471 289.2H24A24 24 0 0 1 0 265.2V24A24 24 0 0 1 24 0Z'
+  );
+}
+
+/* Standalone card: the same pass, 25px wider so that scaled up it fills 1500x600 (5:2) exactly. */
+.pass--card {
+  width: 723px;
+  clip-path: path(
+    'M24 0H496A12 12 0 0 0 520 0H699A24 24 0 0 1 723 24V265.2A24 24 0 0 1 699 289.2H520A12 12 0 0 0 496 289.2H24A24 24 0 0 1 0 265.2V24A24 24 0 0 1 24 0Z'
+  );
+}
+
+.pass__art {
+  position: absolute;
+  right: 200px;
+  top: -30px;
+  width: 520px;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+/* The car is a line drawing, so it sits in the empty top-right corner, clear of the small labels. */
+.pass__art--f1 {
+  right: 240px;
+  top: 1px;
+  width: 286px;
+  opacity: 0.24;
+}
+
+/* On the card the header also carries the logo, so the car moves right to stay clear of it. */
+.pass--card .pass__art--f1 {
+  right: 228px;
+  width: 268px;
+}
+
+.pass__main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 28px 30px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.pass__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.pass__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pass__brand img {
+  display: block;
+  height: 24px;
+  width: auto;
+}
+
+.pass__brand-rule {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.pass__kicker {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.pass__greeting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px 5px 7px;
+  border-radius: 999px;
+  background: #fff;
+  color: #234e92;
+  white-space: nowrap;
+}
+
+.pass__greeting img {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+
+.pass__route {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-weight: 300;
+  font-size: 32px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pass__route b {
+  font-weight: 700;
+}
+
+/* Drawn rather than typed: "→" is not in the bundled font, so it would fall back to whatever
+   font the server happens to have. */
+.pass__route svg {
+  flex: none;
+  align-self: center;
+  width: 22px;
+  height: 12px;
+  margin-top: 7px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pass__fields {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: space-between;
+  gap: 18px 20px;
+}
+
+.pass__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pass__field--end {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.pass__label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
+.pass__value {
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pass__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.pass__code {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Longer codes step down so they never run into the seat assignment. */
+.pass__code--long {
+  font-size: 23px;
+  letter-spacing: 0.08em;
+}
+
+.pass__code--xlong {
+  font-size: 17px;
+  letter-spacing: 0.05em;
+}
+
+.pass__code--xxlong {
+  font-size: 13px;
+  letter-spacing: 0.03em;
+}
+
+.pass__tear {
+  width: 0;
+  border-left: 2px dashed rgba(255, 255, 255, 0.4);
+  margin: 14px 0;
+}
+
+.pass__stub {
+  width: 214px;
+  box-sizing: border-box;
+  flex: none;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* White tile behind the QR code. The image carries its own 4-module quiet zone as well. */
+.pass__qr {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.pass__qr img {
+  display: block;
+  width: 122px;
+  height: 122px;
+}
+
+.pass__hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pass__hint b {
+  font-weight: 700;
+}
