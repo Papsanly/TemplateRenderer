@@ -2,35 +2,165 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>WeFly Back Cover - A4</title>
+  <title>WeFly Gift Card - Rules</title>
+  {#
+    Back page of the A4 gift card: the simulator rules.
+    Context: gate (optional) — a Formula 1 gate swaps in the racing rules and photo; anything else,
+    including no context at all, renders the flight-simulator rules.
+  #}
+  {% set is_f1 = 'formula' in (gate|default('')|string|lower) %}
   <style>
-    * { padding: 0; margin: 0; box-sizing: border-box; }
+    {% include "partials/wefly_gift.css" %}
+
     @page { size: A4; margin: 0; }
-    body { 
-      width: 210mm; 
-      height: 297mm;
-      display: flex;
-      justify-content: center;
-      padding-top: 10mm;
-      background: white;
-    }
-    .back-cover {
-      width: 200mm;
-      height: 80mm;
+
+    html, body { width: 794px; height: 1122px; overflow: hidden; background: #fff; }
+
+    .page {
       position: relative;
+      width: 794px;
+      height: 1123px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
     }
+
+    .banner { position: relative; height: 200px; flex: none; overflow: hidden; background: #0d1a3f; }
+    .banner__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .banner__shade { position: absolute; inset: 0; background: linear-gradient(to right, rgba(13,26,63,.9), rgba(13,26,63,.45)); }
+    .banner__copy {
+      position: absolute; left: 48px; right: 48px; top: 44px; bottom: 34px;
+      display: flex; flex-direction: column; justify-content: space-between; color: #fff;
+    }
+    .banner__logo { display: block; height: 32px; width: auto; align-self: flex-start; }
+    .banner__title { display: flex; flex-direction: column; gap: 6px; }
+    .banner__kicker { font-size: 11px; letter-spacing: .22em; font-weight: 600; color: rgba(255,255,255,.7); }
+    .banner h2 { margin: 0; font-size: 34px; line-height: 1.05; font-weight: 300; letter-spacing: -.02em; white-space: nowrap; }
+    .banner h2 b { font-weight: 700; }
+
+    .body { flex: 1; padding: 28px 48px 40px; display: flex; flex-direction: column; gap: 22px; }
+
+    .note {
+      padding: 16px 20px; border-radius: 16px; background: #e8f1fc;
+      display: flex; gap: 14px; align-items: center;
+      color: #234e92; font-size: 13px; line-height: 1.5;
+    }
+    .note svg { flex: none; }
+    .note b { font-weight: 700; }
+
+    .rules { columns: 2; column-gap: 34px; font-size: 12px; line-height: 1.6; color: rgba(13,26,63,.75); }
+    .rule { break-inside: avoid; margin-bottom: 18px; display: flex; flex-direction: column; gap: 4px; }
+    .rule__head { display: flex; align-items: baseline; gap: 10px; }
+    .rule__head i { font-style: normal; font-size: 11px; font-weight: 600; letter-spacing: .1em; color: #377ae4; }
+    .rule__head b { font-size: 13.5px; font-weight: 700; color: #0d1a3f; }
+
+    .contacts {
+      margin-top: auto; padding-top: 16px; border-top: 1px solid #d1e3f9;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px;
+      font-size: 11.5px; font-weight: 500; line-height: 1.5; color: rgba(13,26,63,.65);
+    }
+    .contacts b { display: block; margin-bottom: 3px; font-size: 10px; letter-spacing: .18em; color: rgba(13,26,63,.45); }
   </style>
 </head>
 <body>
-<div class="back-cover">
-  <!-- Background with fill -->
-  <svg style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;" viewBox="0 0 1500 600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <path d="M1418 0C1463.29 0 1500 36.7127 1500 82V518C1500 563.287 1463.29 600 1418 600H82C36.7127 600 1.22425e-06 563.287 0 518V82C0 36.7127 36.7127 1.22411e-06 82 0H1418Z" fill="#1273EB" fill-opacity="0.14"/>
-  </svg>
-  <!-- Logo centered -->
-  <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-    <img style="width: 50mm;" src="images/AlternativeLogo.svg" alt="WeFly" />
+<div class="page">
+
+  <div class="banner">
+    {% if is_f1 %}
+    <img class="banner__photo" src="images/gift/back-f1.jpg" alt="">
+    {% else %}
+    <img class="banner__photo" src="images/gift/back-flight.jpg" alt="">
+    {% endif %}
+    <div class="banner__shade"></div>
+    <div class="banner__copy">
+      <img class="banner__logo" src="images/MainLogo-white.svg" alt="WeFly">
+      <div class="banner__title">
+        <div class="banner__kicker">{% if is_f1 %}GENERAL RULES FOR USING OUR FORMULA 1 SIMULATOR{% else %}GENERAL RULES FOR USING OUR FLIGHT SIMULATORS{% endif %}</div>
+        <h2>Simulator <b>limitations</b></h2>
+      </div>
+    </div>
   </div>
+
+  <div class="body">
+    <div class="note">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3460a8" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+      <span><b>This gift card is valid for 1 year from the date of purchase.</b> Enter your code at wefly.aero/activate and select your preferred date and time. Open 9:00 AM – 9:00 PM, Mon–Sat, by appointment only.</span>
+    </div>
+
+    <div class="rules">
+      {% if is_f1 %}
+      <div class="rule">
+        <div class="rule__head"><i>01</i><b>Age limit</b></div>
+        <span>Kids under 10 years old are not allowed to participate. Guests aged 10–14 are allowed only when accompanied by adults. Participants under 18 must have the Terms accepted by a parent or legal guardian.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>02</i><b>Size restriction</b></div>
+        <span>Minimum height: 4 ft 0 in (122 cm) to drive the Formula 1 simulator. Maximum height: 6 ft 6 in (198 cm). Maximum waist/hip circumference: 48 inches, corresponding to a weight of 270 lbs (due to equipment limitations).</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>03</i><b>Punctuality</b></div>
+        <span>Any late arrival will result in a reduction of your simulator session time to ensure smooth scheduling for all clients. Customers arriving more than 15 minutes late or failing to show up forfeit their session without a refund.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>04</i><b>Rescheduling &amp; refunds</b></div>
+        <span>Let us know at least 48 hours before your scheduled appointment and we will reschedule or refund you. Requests made less than 48 hours ahead are not eligible for a refund. Refund requests can only be submitted by the purchaser listed in the original booking.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>05</i><b>Gift card</b></div>
+        <span>Each code is good for one session and is tied to the simulator and session length chosen at checkout. Enter it at wefly.aero/activate and select your preferred date and time. The price shown is the total price — no booking fees, no added taxes.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>06</i><b>Your race</b></div>
+        <span>Choose your car class, track and settings to match your skill level. Race against AI, set lap times in a time trial or go head-to-head in 1v1 multiplayer.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>07</i><b>Prohibited</b></div>
+        <span>During the session it is mandatory to follow safety rules and the instructions of the instructor. Only authorized individuals may enter the simulator area, and only with an instructor present. Bringing foreign objects, food or animals is prohibited. Applying physical force to the simulator’s control system is forbidden. Being under the influence of alcohol or drugs is strictly prohibited. Pregnant women and individuals showing visible signs of illness or feeling unwell are not permitted to participate.</span>
+      </div>
+      {% else %}
+      <div class="rule">
+        <div class="rule__head"><i>01</i><b>Age limit</b></div>
+        <span>Kids under 10 years old are not allowed to participate in the flight. Guests aged 10–14 are allowed only when accompanied by adults. Participants under 18 must have the Terms accepted by a parent or legal guardian.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>02</i><b>Size restriction</b></div>
+        <span>Maximum waist/hip circumference: 48 inches, corresponding to a weight of 270 lbs (due to equipment limitations). Maximum height: 6 ft 6 in (198 cm). Minimum height: 3 ft 7 in (1.10 m).</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>03</i><b>Punctuality</b></div>
+        <span>Any late arrival will result in a reduction of your simulator session time to ensure smooth scheduling for all clients. Customers arriving more than 15 minutes late or failing to show up forfeit their session without a refund.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>04</i><b>Rescheduling &amp; refunds</b></div>
+        <span>Let us know at least 48 hours before your scheduled appointment and we will reschedule or refund you. Requests made less than 48 hours ahead are not eligible for a refund. Refund requests can only be submitted by the purchaser listed in the original booking.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>05</i><b>Gift card</b></div>
+        <span>Each code is good for one session and is tied to the simulator and session length chosen at checkout. Enter it at wefly.aero/activate and select your preferred date and time. The price shown is the total price — no booking fees, no added taxes.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>06</i><b>Shared cockpit</b></div>
+        <span>Guests ages 14 and up may share the cockpit with prior instructor approval. The instructor will assess readiness, skills and behavior before allowing both guests to sit in the pilot and co-pilot seats.</span>
+      </div>
+      <div class="rule">
+        <div class="rule__head"><i>07</i><b>Prohibited</b></div>
+        <span>During the flight it is mandatory to follow safety rules and the instructions of the pilot-instructor. Only authorized individuals may enter the flight deck, and only with a pilot-instructor present. Bringing foreign objects, food or animals is prohibited. Applying physical force to the simulator’s control system, levers, buttons, switches or valves is forbidden. Being under the influence of alcohol or drugs is strictly prohibited. Pregnant women and individuals showing visible signs of illness or feeling unwell are not permitted to participate.</span>
+      </div>
+      {% endif %}
+      <div class="rule">
+        <div class="rule__head"><i>08</i><b>Liability waiver</b></div>
+        <span>Participation is subject to WeFly’s Terms of Service, including a release of liability and assumption of risk. WeFly may require you to sign a liability waiver before your session. Full text: wefly.aero/blog/terms-and-conditions.</span>
+      </div>
+    </div>
+
+    <div class="contacts">
+      <div><b>ADDRESS</b>1 W Mountain St, Unit 9<br>Pasadena, CA 91103</div>
+      <div><b>CONTACT</b>+1 (844) 966-4865<br>info@wefly.aero</div>
+      <div><b>WHATSAPP</b>Calls: +1 (909) 204-8218<br>Text: +1 (555) 477-7972</div>
+    </div>
+  </div>
+
 </div>
 </body>
 </html>
