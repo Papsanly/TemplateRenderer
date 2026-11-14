@@ -1,23 +1,48 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>WeFly Back Cover</title>
+  <title>Aviasim — подарунковий сертифікат, зворот</title>
+  {# Back of the 1500x600 gift card: brand and contacts on the pass gradient. Needs no context. #}
   <style>
-    * { padding: 0; margin: 0; box-sizing: border-box; }
+    {% include "partials/aviasim_gift.css" %}
+
     @page { size: 1500px 600px; margin: 0; }
-    body { width: 1500px; height: 600px; }
+
+    html, body { width: 1500px; height: 600px; overflow: hidden; background: #fff; }
+
+    .card { position: relative; width: 1500px; height: 600px; overflow: hidden; background: #fff; }
+    .card__scale { width: 723px; height: 289.2px; transform: scale(2.074689); transform-origin: 0 0; }
+
+    .back {
+      position: relative; width: 723px; height: 289.2px; box-sizing: border-box; overflow: hidden;
+      border-radius: 24px; background: linear-gradient(to right, #306bc9, #2258b5); color: #fff;
+      padding: 28px 30px 24px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    }
+    .back__art { position: absolute; left: 50%; top: -20px; width: 620px; margin-left: -310px; opacity: .1; }
+    .back .brand { position: relative; flex-direction: column; gap: 14px; margin-top: 34px; font-size: 40px; letter-spacing: -.01em; }
+    .back .brand img { width: 84px; height: 77px; }
+    .back__contacts {
+      position: relative; display: flex; align-items: center; gap: 12px;
+      font-size: 10.5px; font-weight: 500; letter-spacing: .04em; color: rgba(255,255,255,.85); white-space: nowrap;
+    }
+    .back__contacts i { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.5); }
   </style>
 </head>
 <body>
-<div style="width: 1500px; height: 600px; position: relative; background: white;">
-  <!-- Background with fill -->
-  <svg style="position: absolute; left: 0; top: 0; width: 1500px; height: 600px;" viewBox="0 0 1500 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M1418 0C1463.29 0 1500 36.7127 1500 82V518C1500 563.287 1463.29 600 1418 600H82C36.7127 600 1.22425e-06 563.287 0 518V82C0 36.7127 36.7127 1.22411e-06 82 0H1418Z" fill="#1273EB" fill-opacity="0.14"/>
-  </svg>
-  <!-- Logo centered -->
-  <div style="position: absolute; left: 0; top: 0; width: 1500px; height: 600px; display: flex; align-items: center; justify-content: center;">
-    <img style="width: 350px;" src="images/AlternativeLogo.svg" alt="WeFly" />
+<div class="card">
+  <div class="card__scale">
+    <div class="back">
+      <img class="back__art" src="images/plane-outline-white.svg" alt="">
+      <div class="brand"><img src="images/aviasim-mark-white.svg" alt="">Aviasim</div>
+      <div class="back__contacts">
+        <span>м. Київ, вул. Герцена, 35</span><i></i>
+        <span>+380 50 737 08 00</span><i></i>
+        <span>aviasim.com.ua</span><i></i>
+        <span>@aviasimfly</span>
+      </div>
+    </div>
   </div>
 </div>
 </body>
