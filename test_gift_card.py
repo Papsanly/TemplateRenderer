@@ -1,10 +1,16 @@
 import base64
 import os
 import re
+import subprocess
+import sys
+import tempfile
 import unittest
+from unittest import mock
 
 import qrcode
+from fastapi.testclient import TestClient
 
+import server
 from renderer.config import TEMPLATE_PATH
 from renderer.template import env, get_context_keys, render_template
 from scripts.switch_theme import TEMPLATE_FILES, comment_christmas_block, uncomment_christmas_block
@@ -181,6 +187,100 @@ class ChristmasThemeTests(unittest.TestCase):
                 birthday = dict(params, is_birthday=True)
                 self.assertIn("Happy Birthday!", env.from_string(festive).render(birthday))
                 self.assertNotIn("Merry Christmas", env.from_string(festive).render(birthday))
+
+
+class OverlappingRequestTests(unittest.TestCase):
+    """Chrome renders every gift card into files, and two buyers can order in the same second.
+
+    The requests used to share temp.html, front.pdf and out.pdf, with a clean-up after each
+    response: the second download came back cut short, or carried the first buyer's code.
+    Chrome is replaced here by a stand-in that writes the gift code it was asked to print.
+    """
+
+    ENDPOINTS = [("/a4", "+back"), ("/a4-single", ""), ("/", ""), ("/png", "")]
+
+    def setUp(self):
+        self.output = tempfile.TemporaryDirectory()
+        self.addCleanup(self.output.cleanup)
+        back_cover = os.path.join(self.output.name, "back_cover_a4.pdf")
+        with open(back_cover, "wb") as f:
+            f.write(b"back")
+        self.during_render = None
+        self.chrome_fails = False
+
+        def chrome(command):
+            out_file, html_file = re.search(r'--(?:print-to-pdf|screenshot)="([^"]+)" "([^"]+)"$', command).groups()
+            if self.chrome_fails:
+                raise subprocess.CalledProcessError(1, command)
+            with open(html_file, encoding="utf-8") as f:
+                code = re.search(r'class="pass__code[^"]*">([^<]+)<', f.read()).group(1)
+            with open(out_file, "wb") as f:
+                f.write(code.encode())
+            # The moment another buyer's request lands: this one is rendered but not yet sent.
+            interruption, self.during_render = self.during_render, None
+            if interruption:
+                interruption()
+
+        def merge(front_pdf, back_pdf, output_pdf):
+            with open(front_pdf, "rb") as front, open(back_pdf, "rb") as back, open(output_pdf, "wb") as out:
+                out.write(front.read() + b"+" + back.read())
+
+        for target, value in [("renderer.convert.run_chrome", chrome), ("renderer.convert.CHROME_PATH", sys.executable),
+                              ("renderer.convert.OUTPUT_PATH", self.output.name), ("server.OUTPUT_PATH", self.output.name),
+                              ("server.merge_pdfs", merge), ("server.get_back_cover_a4", lambda simulator=None: back_cover)]:
+            patcher = mock.patch(target, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        self.files_before = self.files_on_disk()
+
+    def files_on_disk(self):
+        return sorted(os.listdir(self.output.name)), sorted(os.listdir(TEMPLATE_PATH))
+
+    def request(self, path, code, simulator="Boeing 737 MAX", **client_options):
+        # No `with`: the startup hook renders the back covers and needs a real Chrome.
+        client = TestClient(server.app, **client_options)
+        return client.get(path, params={"simulator": simulator, "duration": "50", "code": code})
+
+    def test_each_request_gets_its_own_gift_card(self):
+        for path, back in self.ENDPOINTS:
+            for simulator in ("Boeing 737 MAX", "formula1"):
+                with self.subTest(path=path, simulator=simulator):
+                    second = []
+                    self.during_render = lambda: second.append(self.request(path, "SECOND", simulator))
+                    first = self.request(path, "FIRST", simulator)
+                    self.assertEqual(first.status_code, 200)
+                    self.assertEqual(first.content.decode(), "FIRST" + back)
+                    self.assertEqual(second[0].status_code, 200)
+                    self.assertEqual(second[0].content.decode(), "SECOND" + back)
+                    self.assertEqual(int(first.headers["content-length"]), len(first.content))
+
+    def test_requests_one_after_another_all_succeed(self):
+        for path, back in self.ENDPOINTS:
+            for code in ("AAAAAA", "BBBBBB", "CCCCCC"):
+                with self.subTest(path=path, code=code):
+                    self.assertEqual(self.request(path, code).content.decode(), code + back)
+
+    def test_download_keeps_its_name_and_type(self):
+        for path, name, media_type in [("/a4", "WeFly-Gift-Card.pdf", "application/pdf"),
+                                       ("/a4-single", "WeFly-Gift-Card.pdf", "application/pdf"),
+                                       ("/", "WeFly-Gift-Card.pdf", "application/pdf"),
+                                       ("/png", "WeFly-Gift-Card.png", "image/png")]:
+            with self.subTest(path=path):
+                response = self.request(path, "PDLEDC")
+                self.assertEqual(response.headers["content-disposition"], f'attachment; filename="{name}"')
+                self.assertEqual(response.headers["content-type"], media_type)
+
+    def test_nothing_is_left_on_disk(self):
+        for path, _ in self.ENDPOINTS:
+            self.request(path, "PDLEDC")
+        self.assertEqual(self.files_on_disk(), self.files_before)
+
+    def test_failed_render_is_an_error_and_leaves_nothing_behind(self):
+        self.chrome_fails = True
+        for path, _ in self.ENDPOINTS:
+            with self.subTest(path=path):
+                self.assertEqual(self.request(path, "PDLEDC", raise_server_exceptions=False).status_code, 500)
+        self.assertEqual(self.files_on_disk(), self.files_before)
 
 
 if __name__ == "__main__":

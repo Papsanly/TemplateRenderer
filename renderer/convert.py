@@ -1,9 +1,31 @@
 import asyncio
 import os
+import signal
 import subprocess
 import sys
 
 from .config import CHROME_PATH, OUTPUT_PATH, TEMPLATE_PATH
+
+# Chrome renders a certificate in ~1s but occasionally hangs forever. The server
+# handles requests one at a time, so a single hang blocks every later certificate.
+CHROME_TIMEOUT_SECONDS = 30
+
+
+def run_chrome(shell_command: str):
+    if sys.platform.startswith("win32"):
+        subprocess.run(shell_command, check=True, timeout=CHROME_TIMEOUT_SECONDS)
+        return
+
+    # Own process group, so a timeout kills Chrome and its helpers, not just the shell
+    process = subprocess.Popen(shell_command, shell=True, start_new_session=True)
+    try:
+        process.wait(timeout=CHROME_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid, signal.SIGKILL)
+        process.wait()
+        raise
+    if process.returncode != 0:
+        raise subprocess.CalledProcessError(process.returncode, shell_command)
 
 
 def convert_to_pdf(html: str, out_basename: str, tmp_basename: str, a4: bool = False):
@@ -13,13 +35,11 @@ def convert_to_pdf(html: str, out_basename: str, tmp_basename: str, a4: bool = F
     with open(tmp_filename, "w", encoding="utf-8") as f:
         f.write(html)
 
-    shell_command = get_pdf_command(out_filename, tmp_filename, a4)
-
-    subprocess.run(
-        shell_command, shell=not sys.platform.startswith("win32"), check=True
-    )
-
-    os.remove(tmp_filename)
+    # Also when Chrome fails or times out: the templates folder must not collect leftovers
+    try:
+        run_chrome(get_pdf_command(out_filename, tmp_filename, a4))
+    finally:
+        os.remove(tmp_filename)
 
 
 def convert_to_png(html: str, out_basename: str, tmp_basename: str):
@@ -30,13 +50,10 @@ def convert_to_png(html: str, out_basename: str, tmp_basename: str):
     with open(tmp_filename, "w", encoding="utf-8") as f:
         f.write(html)
 
-    shell_command = get_png_command(out_filename, tmp_filename)
-
-    subprocess.run(
-        shell_command, shell=not sys.platform.startswith("win32"), check=True
-    )
-
-    os.remove(tmp_filename)
+    try:
+        run_chrome(get_png_command(out_filename, tmp_filename))
+    finally:
+        os.remove(tmp_filename)
 
 
 async def convert_to_pdf_async(
