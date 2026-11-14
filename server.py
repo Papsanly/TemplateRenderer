@@ -1,11 +1,13 @@
 import base64
 import os
+import tempfile
+from contextlib import contextmanager
 from datetime import datetime
 from urllib.parse import quote
 
 import qrcode
-from fastapi import BackgroundTasks, FastAPI
-from fastapi.responses import FileResponse
+from fastapi import FastAPI
+from fastapi.responses import FileResponse, Response
 from renderer.config import OUTPUT_PATH
 from renderer.convert import convert_to_pdf, convert_to_png, merge_pdfs
 from renderer.template import render_template
@@ -36,11 +38,27 @@ async def startup_event():
     generate_back_cover_a4()
 
 
-def clean_temp_files():
-    for fname in ["temp.html", "front.pdf", "front_a4.pdf", "out.pdf", "front.png"]:
-        path = os.path.join(OUTPUT_PATH, fname)
-        if os.path.exists(path):
-            os.remove(path)
+@contextmanager
+def request_files():
+    """A folder under the output path and an HTML file name that belong to one request.
+
+    Two people can buy a gift in the same second. With shared names (temp.html, front.pdf,
+    out.pdf) and a clean-up after each response, one request deleted or overwrote the file the
+    other was about to send: a download cut short, or somebody else's code on the certificate.
+    The folder is removed when the block ends, so the caller reads the result inside it.
+    """
+    os.makedirs(OUTPUT_PATH, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=OUTPUT_PATH) as folder:
+        name = os.path.basename(folder)
+        yield name, f"temp-{name}.html"
+
+
+def download(path: str, filename: str, media_type: str) -> Response:
+    """The file as a response that no longer needs it on disk."""
+    with open(path, "rb") as f:
+        content = f.read()
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+    return Response(content, media_type=media_type, headers=headers)
 
 
 def build_activation_url(code: str) -> str:
@@ -145,22 +163,18 @@ async def generate_certificate(
     code: str,
     expiration: str = None,
     is_birthday: bool = False,
-    tasks: BackgroundTasks = None,
 ):
     """Generate front certificate only (original size)"""
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
     template = get_template_name(a4=False)
     html = render_template(template, params)
-    convert_to_pdf(html, "front.pdf", "temp.html", a4=False)
 
-    front_path = os.path.join(OUTPUT_PATH, "front.pdf")
-
-    if tasks:
-        tasks.add_task(clean_temp_files)
-
-    return FileResponse(
-        front_path, filename="Aviasim-Gift-Card.pdf", media_type="application/pdf"
-    )
+    with request_files() as (folder, temp_html):
+        front = os.path.join(folder, "front.pdf")
+        convert_to_pdf(html, front, temp_html, a4=False)
+        return download(
+            os.path.join(OUTPUT_PATH, front), "Aviasim-Gift-Card.pdf", "application/pdf"
+        )
 
 
 @app.get("/a4")
@@ -170,28 +184,20 @@ async def generate_certificate_a4(
     code: str,
     expiration: str = None,
     is_birthday: bool = False,
-    tasks: BackgroundTasks = None,
 ):
     """Generate 2-page A4 PDF (front + back) for printing"""
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
-
-    # Generate front A4
     template = get_template_name(a4=True)
     html_front = render_template(template, params)
-    convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
 
-    front_path = os.path.join(OUTPUT_PATH, "front_a4.pdf")
-    output_path = os.path.join(OUTPUT_PATH, "out.pdf")
+    with request_files() as (folder, temp_html):
+        front = os.path.join(folder, "front_a4.pdf")
+        convert_to_pdf(html_front, front, temp_html, a4=True)
 
-    # Merge front + back A4
-    merge_pdfs(front_path, get_back_cover_a4(), output_path)
-
-    if tasks:
-        tasks.add_task(clean_temp_files)
-
-    return FileResponse(
-        output_path, filename="Aviasim-Gift-Card.pdf", media_type="application/pdf"
-    )
+        # Merge front + back A4
+        output_path = os.path.join(OUTPUT_PATH, folder, "out.pdf")
+        merge_pdfs(os.path.join(OUTPUT_PATH, front), get_back_cover_a4(), output_path)
+        return download(output_path, "Aviasim-Gift-Card.pdf", "application/pdf")
 
 
 @app.get("/a4-single")
@@ -201,7 +207,6 @@ async def generate_certificate_a4_single(
     code: str,
     expiration: str = None,
     is_birthday: bool = False,
-    tasks: BackgroundTasks = None,
 ):
     """Generate single-page A4 PDF (for physical gift cards, no back cover)"""
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
@@ -209,16 +214,13 @@ async def generate_certificate_a4_single(
     # Generate front A4 only (no back page)
     template = get_template_name(a4=True)
     html_front = render_template(template, params)
-    convert_to_pdf(html_front, "front_a4.pdf", "temp.html", a4=True)
 
-    front_path = os.path.join(OUTPUT_PATH, "front_a4.pdf")
-
-    if tasks:
-        tasks.add_task(clean_temp_files)
-
-    return FileResponse(
-        front_path, filename="Aviasim-Gift-Card.pdf", media_type="application/pdf"
-    )
+    with request_files() as (folder, temp_html):
+        front = os.path.join(folder, "front_a4.pdf")
+        convert_to_pdf(html_front, front, temp_html, a4=True)
+        return download(
+            os.path.join(OUTPUT_PATH, front), "Aviasim-Gift-Card.pdf", "application/pdf"
+        )
 
 
 @app.get("/png")
@@ -228,7 +230,6 @@ async def generate_certificate_png(
     code: str,
     expiration: str = None,
     is_birthday: bool = False,
-    tasks: BackgroundTasks = None,
 ):
     """Generate front certificate as PNG (1500x600, for physical gift cards)"""
     params = get_template_params(simulator, duration, code, expiration, is_birthday)
@@ -236,16 +237,13 @@ async def generate_certificate_png(
     # Use original 1500x600 template for PNG
     template = get_template_name(a4=False)
     html = render_template(template, params)
-    convert_to_png(html, "front.png", "temp.html")
 
-    front_path = os.path.join(OUTPUT_PATH, "front.png")
-
-    if tasks:
-        tasks.add_task(clean_temp_files)
-
-    return FileResponse(
-        front_path, filename="Aviasim-Gift-Card.png", media_type="image/png"
-    )
+    with request_files() as (folder, temp_html):
+        front = os.path.join(folder, "front.png")
+        convert_to_png(html, front, temp_html)
+        return download(
+            os.path.join(OUTPUT_PATH, front), "Aviasim-Gift-Card.png", "image/png"
+        )
 
 
 @app.get("/back")
